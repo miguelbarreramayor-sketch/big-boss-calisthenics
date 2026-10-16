@@ -52,8 +52,8 @@
   <div class="card">
     <img src="./logo.png" alt="BIG BOSS CALISTHENICS" style="width:90px;border-radius:14px" onerror="this.src='./icon.svg'">
     <h2>BIG BOSS CALISTHENICS — Ingreso</h2>
-    <p class="muted small">Superadmin: miguelbarreramayor@gmail.com · Usuarios: registro gratis, planes Pro/Premium activados por el superadmin (venta suscripción).</p>
-    <div class="grid"><input id="l_email" placeholder="Email" value="miguelbarreramayor@gmail.com"><input id="l_clave" type="password" placeholder="Clave"></div>
+    <p class="muted small">Registro gratis · Planes Pro/Premium activados por el administrador.</p>
+    <div class="grid"><input id="l_email" placeholder="Email" autocomplete="email"><input id="l_clave" type="password" placeholder="Clave"></div>
     <div class="row"><button id="bLogin">Entrar</button><button id="bReg" class="ghost">Crear cuenta free</button></div>
     <pre id="lOut" class="doc"></pre>
   </div>
@@ -61,6 +61,8 @@
 
 <nav class="tabs">
   <button data-tab="rut" class="on" data-i18n="t1">Rutinas</button>
+  <button data-tab="bib">Biblioteca</button>
+  <button data-tab="age">Agente</button>
   <button data-tab="reg" data-i18n="t2">Registrar</button>
   <button data-tab="his" data-i18n="t3">Historial</button>
   <button data-tab="int" data-i18n="t4">Sheet/Drive</button>
@@ -73,6 +75,30 @@
   <div id="listaEj"></div>
   <h3 data-i18n="timer">Temporizador descanso</h3>
   <div class="row"><input id="tSeg" type="number" value="60" min="5" style="width:80px"> <button id="bTGo">▶</button> <b id="tOut">--</b></div>
+</section>
+
+<section id="tab-bib" class="tab">
+  <div class="row"><input id="qBib" placeholder="Buscar ejercicio..." style="flex:1"><select id="fGrupo"><option value="">Todos</option><option>Empuje</option><option>Tirón</option><option>Pierna</option><option>Core</option><option>Skill</option><option>Full</option></select></div>
+  <div id="bibList"></div>
+  <p class="muted small">54 ejercicios base. Fotos en ./img/&lt;id&gt;.png cuando las envíes.</p>
+</section>
+
+<section id="tab-age" class="tab">
+  <h3>🤖 Agente Entrenador BIG BOSS (texto + voz, local)</h3>
+  <div class="grid">
+    <select id="a_nivel"><option value="principiante">Principiante</option><option value="intermedio" selected>Intermedio</option><option value="avanzado">Avanzado</option></select>
+    <select id="a_obj"><option value="fuerza">Fuerza</option><option value="resistencia">Resistencia</option><option value="hipertrofia">Hipertrofia</option><option value="skill">Skills</option></select>
+    <input id="a_peso" type="number" placeholder="Peso kg (opcional)">
+    <input id="a_est" type="number" placeholder="Estatura cm (opcional)">
+    <input id="a_tiempo" type="number" value="45" placeholder="Minutos">
+    <input id="a_equipo" placeholder="Equipo: barra, paralelas, mancuernas">
+    <input id="a_lim" placeholder="Limitaciones/molestias (opcional)">
+  </div>
+  <div class="row"><button id="a_gen">Generar mi plan</button><button id="a_save" class="ghost">Guardar perfil</button></div>
+  <div id="a_plan"></div>
+  <div id="chat" class="doc" style="min-height:140px"></div>
+  <div class="row"><input id="chatIn" placeholder="Pregunta: ¿qué hago hoy? ¿descanso? ¿dominadas?" style="flex:1"><button id="chatSend">➤</button><button id="micBtn">🎤</button><button id="vozBtn" class="ghost">🔊</button></div>
+  <p class="muted small">Reglas locales, sin nube. No diagnostica. Ante dolor torácico/desmayo/falta aire inusual: detén y busca atención.</p>
 </section>
 
 <section id="tab-reg" class="tab">
@@ -118,6 +144,8 @@
 </section>
 </main>
 
+<script src="./library.js"></script>
+<script src="./agent.js"></script>
 <script src="./app.js"></script>
 <footer class="social">
   <img src="./logo.png" class="slogo" alt="BIG BOSS CALISTHENICS" onerror="this.src='./icon.svg'">

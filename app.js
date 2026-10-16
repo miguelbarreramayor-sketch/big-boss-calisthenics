@@ -57,8 +57,8 @@ document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>switchTab(b.d
 
 /* registro offline */
 const getH=()=>store.get("bb_hist",[]),setH=v=>store.set("bb_hist",v);
-$("bSave").onclick=()=>{const h=getH();h.push({fecha_hora:new Date().toISOString(),usuario:$("p_alias").value||store.get("bb_alias","miguel"),rutina:$("r_rut").value||"",ejercicio:$("r_ej").value||"",serie:+$("r_serie").value||1,reps:+$("r_reps").value||"",carga_kg:+$("r_carga").value||"",tiempo_s:+$("r_tiempo").value||"",descanso_s:+$("r_desc").value||"",rpe:+$("r_rpe").value||"",notas:$("r_notas").value||"",app_version:"pwa1.0",origen:"pwa",enviado:false});setH(h);renderH();alert("Guardado local")};
-$("fFoto").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;const b=await f.arrayBuffer();let bin="";new Uint8Array(b).forEach(x=>bin+=String.fromCharCode(x));const b64=btoa(bin);const url=$("iURL").value||EXEC_DEFAULT,tok=$("iTok").value||TOK_DEFAULT;try{const r=await fetch(url,{method:"POST",body:JSON.stringify({token:tok,tipo:"archivo",nombre:f.name,mime:f.type,base64:b64,usuario:$("p_alias").value||"miguel",rutina:$("r_rut").value,ejercicio:$("r_ej").value||"evidencia",notas:$("r_notas").value})});$("iOut").textContent=await r.text()}catch(err){$("iOut").textContent="Error: "+err}});
+$("bSave").onclick=()=>{const h=getH();h.push({fecha_hora:new Date().toISOString(),usuario:$("p_alias").value||store.get("bb_alias",""),rutina:$("r_rut").value||"",ejercicio:$("r_ej").value||"",serie:+$("r_serie").value||1,reps:+$("r_reps").value||"",carga_kg:+$("r_carga").value||"",tiempo_s:+$("r_tiempo").value||"",descanso_s:+$("r_desc").value||"",rpe:+$("r_rpe").value||"",notas:$("r_notas").value||"",app_version:"pwa1.0",origen:"pwa",enviado:false});setH(h);renderH();alert("Guardado local")};
+$("fFoto").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;const b=await f.arrayBuffer();let bin="";new Uint8Array(b).forEach(x=>bin+=String.fromCharCode(x));const b64=btoa(bin);const url=$("iURL").value||EXEC_DEFAULT,tok=$("iTok").value||TOK_DEFAULT;try{const r=await fetch(url,{method:"POST",body:JSON.stringify({token:tok,tipo:"archivo",nombre:f.name,mime:f.type,base64:b64,usuario:$("p_alias").value||"",rutina:$("r_rut").value,ejercicio:$("r_ej").value||"evidencia",notas:$("r_notas").value})});$("iOut").textContent=await r.text()}catch(err){$("iOut").textContent="Error: "+err}});
 
 /* historial */
 function renderH(){const h=getH();$("hCount").textContent=h.length+" registros";$("hList").innerHTML=h.map((r,i)=>`<div class="ej">#${i+1} <b>${r.ejercicio}</b> ${r.reps}reps ${r.rutina} ${r.enviado?"✅":"⏳"}</div>`).join("")}
@@ -76,11 +76,14 @@ $("bSend").onclick=async()=>{const h=getH().filter(r=>!r.enviado);if(!h.length){
 $("bPerfil").onclick=()=>{store.set("bb_alias",$("p_alias").value);renderLegal()};
 $("bExportJ").onclick=()=>dl("bigboss_datos.json",JSON.stringify({hist:getH(),accept:store.get("bb_accept",null)},null,2),"application/json");
 $("bWipe").onclick=()=>{if(confirm("Borrar TODO local?")){localStorage.clear();location.reload()}};
-function renderLegal(){const a=store.get("bb_accept",null);$("pLegal").textContent=BRAND+" · "+DOCV+"\nOperador: Miguel Andrés Barrera Mayor RUC 0919324582001\nContacto: miguelbarreramayor@gmail.com / +593985718915 Guayaquil\nRedes: youtube.com/channel/UCIFIKoCjdTceduUQVU5duGw · IG @big_boss_calisthenics · TikTok @miguelbigbosscalistheni1\nAceptación: "+JSON.stringify(a)+"\nAlias: "+(store.get("bb_alias",""));$("p_alias").value=store.get("bb_alias","miguel")}
+function renderLegal(){const a=store.get("bb_accept",null);$("pLegal").textContent=BRAND+" · "+DOCV+"\nContacto soporte: ver footer / redes oficiales\nAceptación: "+JSON.stringify(a)+"\nAlias: "+(store.get("bb_alias",""));$("p_alias").value=store.get("bb_alias","")}
 
 /* init */
-applyLang();applyTheme();initRuts();renderH();renderLegal();checkGate();checkLogin();
+applyLang();applyTheme();initRuts();renderH();renderLegal();checkGate();checkLogin();initBib();
 if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js");
+
+/* biblioteca 54 */
+function initBib(){const render=()=>{const q=($("qBib").value||"").toLowerCase(),g=$("fGrupo").value;$("bibList").innerHTML=BIBLIO.filter(e=>(!g||e.g===g)&&(!q||(e.n+e.d+e.c).toLowerCase().includes(q))).map(e=>`<div class="ej"><img src="./img/${e.id}.png" alt="${e.n}" style="width:100%;max-height:180px;object-fit:cover;border-radius:8px" onerror="this.style.display='none'"><b>${e.n}</b> · ${e.g} · ${e.dosis}<br><small>${e.d}</small><br><small class="muted">${e.c}</small> <button data-b="${e.n}">＋</button></div>`).join("");document.querySelectorAll("#bibList button").forEach(b=>b.onclick=()=>{$("r_ej").value=b.dataset.b;switchTab("reg")})};$("qBib").oninput=render;$("fGrupo").onchange=render;render()}
 
 /* auth superadmin + suscripciones (v4) */
 function ses(){return store.get("bb_ses",null)}

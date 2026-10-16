@@ -1,0 +1,1 @@
+Guarda aquí tus fotos como <id>.png (ej: flex-estandar.png, pull-prona.png). Ver library.js para los 54 ids.
