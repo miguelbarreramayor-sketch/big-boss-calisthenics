@@ -1,0 +1,13 @@
+{
+  "name": "BIG BOSS CALISTHENICS",
+  "short_name": "BIG BOSS",
+  "description": "MIGUEL BIG BOSS CALISTHENICS — calistenia y mancuernas. Offline-first.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0d0703",
+  "theme_color": "#ff6a00",
+  "icons": [
+    { "src": "./logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icon.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

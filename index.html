@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BIG BOSS CALISTHENICS</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#e50914">
+<link rel="icon" href="./icon.svg">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><img src="./logo.png" alt="BIG BOSS CALISTHENICS" class="logo">BIG BOSS <span>CALISTHENICS</span> <small>· CALISTENIA 360</small></div>
+  <div class="topbtns">
+    <button id="btnInstall" class="inst" data-i18n="inst">⬇ Instalar</button>
+    <button id="btnTheme" title="Claro/Oscuro">🌙</button>
+    <button id="btnES" class="lang on">ES</button>
+    <button id="btnEN" class="lang">EN</button>
+  </div>
+</header>
+<div class="hero-photo">
+  <div class="flame l">🔥</div>
+  <div class="hero-center">
+    <img src="./logo.png" alt="MIGUEL BIG BOSS CALISTHENICS — león calistenia" onerror="this.src='./icon.svg'">
+    <div class="varsity"><span class="v-miguel">MIGUEL</span><span class="v-big">BIG BOSS</span><span class="v-cal">CALISTHENICS</span></div>
+    <div class="barbell"><i></i><span>│ PULL-UP · DIPS · MUSCLE-UP · FRONT LEVER │</span><i></i></div>
+  </div>
+  <div class="flame r">🔥</div>
+</div>
+
+<!-- GATE LEGAL BLOQUEANTE -->
+<div id="gate" class="gate hidden">
+  <div class="card">
+    <h2 data-i18n="gate_t">Antes de continuar</h2>
+    <p class="muted" data-i18n="gate_d">BIG BOSS CALISTHENICS es entrenamiento general (calistenia y mancuernas). No es servicio médico: no diagnostica, no receta, no certifica aptitud. Entrenar implica riesgos. Detén y busca atención ante dolor torácico, desmayo, dificultad respiratoria inusual o palpitaciones intensas.</p>
+    <p class="muted small">Operador: Miguel Andrés Barrera Mayor, RUC 0919324582001, Guayaquil — miguelbarreramayor@gmail.com / +593985718915 · <span data-i18n="gate_v">Docs v1.2 16-oct-2026</span></p>
+    <div class="links"><button id="verT">Ver Términos</button> <button id="verP">Ver Privacidad</button></div>
+    <label class="chk"><input type="checkbox" id="cT"> <b data-i18n="cT">Obligatoria: Acepto Términos y Condiciones</b></label>
+    <label class="chk"><input type="checkbox" id="cP"> <span data-i18n="cP">Confirmo que pude consultar la Política de Privacidad</span></label>
+    <label class="chk"><input type="checkbox" id="cS"> <span data-i18n="cS">Opcional sensible: autorizo datos salud/actividad para personalizar (revocable, modo básico sin esto)</span></label>
+    <label class="chk"><input type="checkbox" id="cSheet"> <span data-i18n="cSheet">Opcional: exportar entrenos a mi Google Sheet</span></label>
+    <label class="chk"><input type="checkbox" id="cMkt"> <span data-i18n="cMkt">Opcional: comunicaciones comerciales</span></label>
+    <div class="row"><button id="btnGate" disabled data-i18n="go">Aceptar y continuar</button>
+    <button id="btnNo" class="ghost" data-i18n="no">No aceptar / Salir</button></div>
+    <pre id="docView" class="doc hidden"></pre>
+  </div>
+</div>
+
+<!-- LOGIN (tras Gate) -->
+<div id="login" class="gate hidden">
+  <div class="card">
+    <img src="./logo.png" alt="BIG BOSS CALISTHENICS" style="width:90px;border-radius:14px" onerror="this.src='./icon.svg'">
+    <h2>BIG BOSS CALISTHENICS — Ingreso</h2>
+    <p class="muted small">Superadmin: miguelbarreramayor@gmail.com · Usuarios: registro gratis, planes Pro/Premium activados por el superadmin (venta suscripción).</p>
+    <div class="grid"><input id="l_email" placeholder="Email" value="miguelbarreramayor@gmail.com"><input id="l_clave" type="password" placeholder="Clave"></div>
+    <div class="row"><button id="bLogin">Entrar</button><button id="bReg" class="ghost">Crear cuenta free</button></div>
+    <pre id="lOut" class="doc"></pre>
+  </div>
+</div>
+
+<nav class="tabs">
+  <button data-tab="rut" class="on" data-i18n="t1">Rutinas</button>
+  <button data-tab="reg" data-i18n="t2">Registrar</button>
+  <button data-tab="his" data-i18n="t3">Historial</button>
+  <button data-tab="int" data-i18n="t4">Sheet/Drive</button>
+  <button data-tab="per" data-i18n="t5">Perfil/Legal</button>
+</nav>
+
+<main>
+<section id="tab-rut" class="tab on">
+  <div class="row"><select id="selRut"></select> <select id="selDia"></select></div>
+  <div id="listaEj"></div>
+  <h3 data-i18n="timer">Temporizador descanso</h3>
+  <div class="row"><input id="tSeg" type="number" value="60" min="5" style="width:80px"> <button id="bTGo">▶</button> <b id="tOut">--</b></div>
+</section>
+
+<section id="tab-reg" class="tab">
+  <h3 data-i18n="reg_t">Registro rápido (offline)</h3>
+  <div class="grid">
+    <input id="r_ej" placeholder="Ejercicio / Exercise">
+    <input id="r_rut" placeholder="Rutina / Routine">
+    <input id="r_serie" type="number" placeholder="Serie">
+    <input id="r_reps" type="number" placeholder="Reps">
+    <input id="r_carga" type="number" placeholder="Carga kg">
+    <input id="r_tiempo" type="number" placeholder="Tiempo s">
+    <input id="r_desc" type="number" placeholder="Descanso s">
+    <input id="r_rpe" type="number" min="1" max="10" placeholder="RPE 1-10">
+    <input id="r_notas" placeholder="Notas / Notes">
+  </div>
+  <div class="row"><button id="bSave" data-i18n="save">Guardar local</button>
+  <label class="chk">📷 <input type="file" id="fFoto" accept="image/*"></label></div>
+  <p class="muted small" data-i18n="reg_h">Se guarda en el dispositivo aunque no haya internet. Luego envíalo a Sheet/Drive.</p>
+</section>
+
+<section id="tab-his" class="tab">
+  <div class="row"><button id="bCSV">CSV</button> <button id="bClear" class="ghost" data-i18n="del">Borrar locales</button> <b id="hCount"></b></div>
+  <div id="hList"></div>
+</section>
+
+<section id="tab-int" class="tab">
+  <h3>Google Sheet + Drive (opt-in)</h3>
+  <label>Apps Script /exec URL<input id="iURL" style="width:100%"></label>
+  <label>Token<input id="iTok" style="width:100%"></label>
+  <div class="row"><button id="bTest">Probar GET</button> <button id="bSend">Enviar pendientes</button></div>
+  <pre id="iOut" class="doc"></pre>
+  <p class="muted small">Sheet: <a href="https://docs.google.com/spreadsheets/d/1D295W5pLZZ0K_P041X-_lZWNVm2XP2ix0QMpNs8ew4w/edit" target="_blank" rel="noopener">BIG_BOSS_ENTRENOS</a><br>Drive: <a href="https://drive.google.com/drive/folders/1mX9L8beKy2FNVZjFj28qQ7de1JKFQV3x" target="_blank" rel="noopener">BIG_BOSS_EVIDENCIAS</a></p>
+</section>
+
+<section id="tab-per" class="tab">
+  <div class="grid">
+    <input id="p_alias" placeholder="Alias / usuario">
+    <button id="bPerfil" data-i18n="save">Guardar local</button>
+  </div>
+  <pre id="pLegal" class="doc"></pre>
+  <div class="row"><button id="bExportJ">JSON</button> <button id="bWipe" class="ghost" data-i18n="del">Borrar locales</button></div>
+  <p class="muted small">miguelbarreramayor@gmail.com · +593985718915 · Guayaquil · YouTube UCIFIKoCjdTceduUQVU5duGw · IG @big_boss_calisthenics</p>
+</section>
+</main>
+
+<script src="./app.js"></script>
+<footer class="social">
+  <img src="./logo.png" class="slogo" alt="BIG BOSS CALISTHENICS" onerror="this.src='./icon.svg'">
+  <a href="https://www.youtube.com/channel/UCIFIKoCjdTceduUQVU5duGw" target="_blank" rel="noopener">▶ YouTube</a>
+  <a href="https://instagram.com/big_boss_calisthenics" target="_blank" rel="noopener">📸 Instagram @big_boss_calisthenics</a>
+  <a href="https://www.tiktok.com/@miguelbigbosscalistheni1" target="_blank" rel="noopener">🎵 TikTok @miguelbigbosscalistheni1</a>
+  <span class="muted small">· miguelbarreramayor@gmail.com</span>
+</footer>
+</body>
+</html>
