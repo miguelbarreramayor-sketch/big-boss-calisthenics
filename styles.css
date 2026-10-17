@@ -119,4 +119,10 @@ input,select{font-family:inherit}
 @keyframes tabIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @media(max-width:600px){.tab::before{font-size:122px;right:-14px;opacity:.055}.tab{min-height:44vh}}
 @media(prefers-reduced-motion:reduce){.tab.on{animation:none}}
+
+/* Selector de días del agente */
+.diaspick{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 10px}
+.dchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--bd);background:var(--card);border-radius:999px;padding:8px 12px;font-weight:800;cursor:pointer;user-select:none}
+.dchip input{width:16px;height:16px}
+.dchip:has(input:checked){background:var(--fire);color:#1d1005;border-color:var(--ac2)}
 @media(max-width:600px){.hero-photo{grid-template-columns:36px 1fr 36px;min-height:190px;padding:16px 4px 12px}.hero-center img{width:118px;height:118px}.v-big{font-size:40px}.flame{font-size:30px}.hero-sub{font-size:11px}.athletes{opacity:.4}}
