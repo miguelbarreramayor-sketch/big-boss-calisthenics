@@ -114,15 +114,32 @@ input,select{font-family:inherit}
 #tab-his::before{content:"📊"}
 #tab-int::before{content:"☁️"}
 #tab-per::before{content:"🛡️"}
+#tab-sus::before{content:"⭐"}
 #tab-fue::before{content:"📚"}
 .tab.on{animation:tabIn .34s cubic-bezier(.2,.7,.3,1)}
 @keyframes tabIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @media(max-width:600px){.tab::before{font-size:122px;right:-14px;opacity:.055}.tab{min-height:44vh}}
 @media(prefers-reduced-motion:reduce){.tab.on{animation:none}}
-
 /* Selector de días del agente */
 .diaspick{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 10px}
 .dchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--bd);background:var(--card);border-radius:999px;padding:8px 12px;font-weight:800;cursor:pointer;user-select:none}
 .dchip input{width:16px;height:16px}
 .dchip:has(input:checked){background:var(--fire);color:#1d1005;border-color:var(--ac2)}
 @media(max-width:600px){.hero-photo{grid-template-columns:36px 1fr 36px;min-height:190px;padding:16px 4px 12px}.hero-center img{width:118px;height:118px}.v-big{font-size:40px}.flame{font-size:30px}.hero-sub{font-size:11px}.athletes{opacity:.4}}
+
+/* ===== Suscripción / planes ===== */
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:10px 0}
+.plan{border:1px solid var(--bd);border-radius:14px;padding:12px;background:linear-gradient(180deg,#ffffff09,transparent);display:flex;flex-direction:column;gap:6px}
+.plan.on{border-color:var(--ac2);box-shadow:0 0 0 2px #ffb30055 inset}
+.plan.soon{opacity:.72}
+.plan b{font-size:16px}
+.plan .price{font-size:26px;font-weight:900;background:var(--fire);-webkit-background-clip:text;background-clip:text;color:transparent}
+.plan .price small{font-size:12px;color:var(--mut);-webkit-text-fill-color:var(--mut)}
+.plan button{margin-top:auto}
+.plan .cp{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;padding:2px 8px;font-weight:800;min-height:auto;font-size:12px;cursor:pointer;text-transform:none}
+#payBox{margin-top:14px;border-top:1px dashed var(--bd);padding-top:10px}
+.ej.ok{border-color:#25d366;background:linear-gradient(180deg,#25d36622,transparent)}
+.ej.warn{border-color:var(--ac2);background:linear-gradient(180deg,#ffb30022,transparent)}
+.ej.paywall{border-color:var(--ac2);background:linear-gradient(180deg,#ff6a0022,transparent)}
+#susEstado b{color:var(--ac2)}
+#admList .ej a{color:var(--ac2)}

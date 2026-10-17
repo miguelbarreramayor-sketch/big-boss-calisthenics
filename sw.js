@@ -1,9 +1,9 @@
-/* BIG BOSS CALISTHENICS — Service Worker (v5)
+/* BIG BOSS CALISTHENICS — Service Worker (v8)
    - precache con cache:"reload" (siempre trae la versión nueva al instalar)
    - activate: borra cachés anteriores
    - navegación: red primero; estáticos: stale-while-revalidate (sirve rápido y actualiza) */
-const C="bb-v7";
-const F=["./","./index.html","./styles.css?v=7","./app.js?v=7","./agent.js?v=7","./library.js?v=7","./fuentes.js?v=7","./manifest.webmanifest?v=7","./icon.svg","./logo.png"];
+const C="bb-v8";
+const F=["./","./index.html","./styles.css?v=8","./app.js?v=8","./agent.js?v=8","./library.js?v=8","./fuentes.js?v=8","./manifest.webmanifest?v=8","./icon.svg","./logo.png"];
 self.addEventListener("install",e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>Promise.all(F.map(u=>fetch(u,{cache:"reload"}).then(r=>{if(r&&r.ok)c.put(u,r)}).catch(()=>{})))))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",e=>{const q=e.request;if(q.method!=="GET")return;

@@ -2,7 +2,7 @@
 const BRAND = "BIG BOSS CALISTHENICS";
 const EXEC_DEFAULT = "https://script.google.com/macros/s/AKfycbxaecJsfPS8WVk6IkL717174AJhnz3VuAhaQl65-_rZw88McegZ7MVHI7Xfe6LbMk_BoQ/exec";
 const TOK_DEFAULT = "BIGBOSS_2026_cambia_esto";
-const DOCV = "v1.2 16-oct-2026";
+const DOCV = "v1.3 17-oct-2026";
 const $ = id => document.getElementById(id);
 const store = {
   get:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}},
@@ -29,15 +29,15 @@ let deferred=null;$("btnInstall").onclick=async()=>{if(deferred){deferred.prompt
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e});
 
 /* gate */
-const TERMS = BRAND+" — TÉRMINOS v1.2\nOperador: Miguel Andrés Barrera Mayor RUC 0919324582001 Guayaquil miguelbarreramayor@gmail.com +593985718915\nObjeto: app entrenamiento general calistenia+mancuernas. NO médico: no diagnostica/receta/certifica.\nRutinas: material general revisado por Miguel Barrera (no médico). Usuario ejecuta bajo su responsabilidad, detiene ante síntomas alarma.\nCuenta personal, credenciales intransferibles. PI del Prestador. Offline-first; IA/nube/pagos requieren internet.\nVersiones: cambio material exige re-aceptación. Ley Ecuador, Guayaquil.\nRedes: youtube.com/channel/UCIFIKoCjdTceduUQVU5duGw · IG @big_boss_calisthenics · TikTok @miguelbigbosscalistheni1";
+const TERMS = BRAND+" — TÉRMINOS v1.3\nOperador: Miguel Andrés Barrera Mayor RUC 0919324582001 Guayaquil miguelbarreramayor@gmail.com +593985718915\nObjeto: app entrenamiento general calistenia+mancuernas. NO médico: no diagnostica/receta/certifica.\nRutinas: material general revisado por Miguel Barrera (no médico). Usuario ejecuta bajo su responsabilidad, detiene ante síntomas alarma.\nCuenta personal, credenciales intransferibles. PI del Prestador. Offline-first; IA/nube/pagos requieren internet.\nSUSCRIPCIÓN: planes Free (gratis), Básico (USD 4.99/mes) y VIP (USD 9.99/mes). El Agente entrenador completo es función de pago.\nPagos (etapa actual, sin pasarela): transferencia/depósito y pago móvil a la cuenta indicada; el usuario sube el comprobante y el Prestador activa el plan (30 días) tras verificar el pago.\nActivación manual: la suscripción se otorga a discreción del Prestador una vez confirmado el pago. Vencimiento: al terminar el periodo, la cuenta vuelve a Free.\nReembolsos/cancelación: no hay cargos automáticos; al ser activación manual por transferencia, las solicitudes rechazadas no generan cobro. Reclamos dentro de 15 días al correo de contacto.\nFacturación: comprobantes según normativa tributaria de Ecuador; el Prestador factura a nombre del titular del pago.\nServicios de salud (nutricionista/médico): BLOQUEADOS hasta contar con profesionales verificados; se anunciarán como 'próximamente'.\nVersiones: cambio material exige re-aceptación. Ley Ecuador, Guayaquil.\nRedes: youtube.com/channel/UCIFIKoCjdTceduUQVU5duGw · IG @big_boss_calisthenics · TikTok @miguelbigbosscalistheni1";
 const PRIV = BRAND+" — PRIVACIDAD v1.2 LOPDP\nResponsable: Miguel A. Barrera Mayor. Contacto privacidad: miguelbarreramayor@gmail.com\nDatos: cuenta, perfil entreno opcional, sesiones, logs. Salud/actividad solo opt-in. MVP sin proveedores externos (local). Sheet/Drive solo opt-in revocable.\nDerechos (15 días): info/acceso/rectificación/eliminación/oposición/portabilidad en Perfil>Privacidad o email. Incidentes riesgo: 5 días Superintendencia. Conservación: entrenos 12m tras cierre, tributario 7a, logs 12m, derechos 3a.\nMenores: 18+ autónomo, 14-17 con tutor, <14 sin cuenta.";
-function gateNeeded(){const a=store.get("bb_accept",null);return !(a&&a.terms==="v1.2"&&a.priv==="v1.2")}
+function gateNeeded(){const a=store.get("bb_accept",null);return !(a&&a.terms==="v1.3"&&a.priv==="v1.2")}
 function showGate(v){$("gate").classList.toggle("hidden",!v)}
 function checkGate(){$("btnGate").disabled=!($("cT").checked&&$("cP").checked);showGate(gateNeeded())}
 ["cT","cP"].forEach(id=>$(id).addEventListener("change",checkGate));
 $("verT").onclick=()=>{const d=$("docView");d.classList.remove("hidden");d.textContent=TERMS};
 $("verP").onclick=()=>{const d=$("docView");d.classList.remove("hidden");d.textContent=PRIV};
-$("btnGate").onclick=()=>{store.set("bb_accept",{brand:BRAND,terms:"v1.2",priv:"v1.2",date:new Date().toISOString(),sens:$("cS").checked,sheet:$("cSheet").checked,mkt:$("cMkt").checked,lang});showGate(false);checkLogin();renderLegal()};
+$("btnGate").onclick=()=>{store.set("bb_accept",{brand:BRAND,terms:"v1.3",priv:"v1.2",date:new Date().toISOString(),sens:$("cS").checked,sheet:$("cSheet").checked,mkt:$("cMkt").checked,lang});showGate(false);checkLogin();renderLegal()};
 $("btnNo").onclick=()=>{alert("Debes aceptar lo obligatorio para usar "+BRAND)};
 
 /* ===== Biblioteca helpers (id + imagen) ===== */
@@ -66,7 +66,7 @@ let tInt=null;$("bTGo").onclick=()=>{clearInterval(tInt);let s=+$("tSeg").value|
 
 /* tabs */
 function switchTab(t){document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("on",b.dataset.tab===t));document.querySelectorAll(".tab").forEach(s=>s.classList.toggle("on",s.id==="tab-"+t))}
-document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{switchTab(b.dataset.tab);if(b.dataset.tab==="rut")updDias()});
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{switchTab(b.dataset.tab);if(b.dataset.tab==="rut")updDias();if(b.dataset.tab==="age")applyAgentBanner();if(b.dataset.tab==="sus")renderSus()});
 
 /* registro offline */
 const getH=()=>store.get("bb_hist",[]),setH=v=>store.set("bb_hist",v);
@@ -102,9 +102,96 @@ function ses(){return store.get("bb_ses",null)}
 function checkLogin(){const s=ses();const g=gateNeeded();$("login").classList.toggle("hidden",!!s||g)}
 async function api(payload){const r=await fetch($("iURL").value||EXEC_DEFAULT,{method:"POST",body:JSON.stringify({token:$("iTok").value||TOK_DEFAULT,...payload})});return r.json()}
 $("bReg").onclick=async()=>{try{const j=await api({accion:"registro",email:$("l_email").value,alias:$("l_email").value.split("@")[0],clave:$("l_clave").value});$("lOut").textContent=JSON.stringify(j);if(j.ok)alert("Cuenta free creada. Ahora Entra.")}catch(e){$("lOut").textContent="Error: "+e}};
-$("bLogin").onclick=async()=>{try{const j=await api({accion:"login",email:$("l_email").value,clave:$("l_clave").value});$("lOut").textContent=JSON.stringify(j);if(j.ok){store.set("bb_ses",{email:$("l_email").value,clave:$("l_clave").value,alias:j.alias,plan:j.plan,rol:j.rol});store.set("bb_alias",j.alias);checkLogin();renderLegal();alert("Bienvenido "+j.alias+" · "+j.plan)}}catch(e){$("lOut").textContent="Error: "+e}};
+$("bLogin").onclick=async()=>{try{const j=await api({accion:"login",email:$("l_email").value,clave:$("l_clave").value});$("lOut").textContent=JSON.stringify(j);if(j.ok){store.set("bb_ses",{email:$("l_email").value,clave:$("l_clave").value,alias:j.alias,plan:j.plan,rol:j.rol,estado:j.estado||"free",servicio:j.servicio||"",expira:j.expira||"",vigente:!!j.vigente});store.set("bb_alias",j.alias);checkLogin();renderLegal();renderSus();applyAgentBanner();alert("Bienvenido "+j.alias+" · "+j.plan)}}catch(e){$("lOut").textContent="Error: "+e}};
+
+/* ===== Suscripción / planes (F1) ===== */
+const BANCO={banco:"Banco Bolivariano",tipo:"Cuenta de ahorro",cuenta:"0912001575",titular:"Miguel Barrera Mayor",cedula:"0919324582",pagoMovil:"+593 98 571 8915",correo:"miguelbarreramayor@gmail.com"};
+const PLANES={
+ free:{n:"Free",precio:0,d:"Biblioteca 54 + fichas técnicas, rutinas prediseñadas, registro/historial y export."},
+ basico:{n:"Básico (Agente)",precio:4.99,d:"Agente entrenador completo: plan por días/grupos/full body, técnica, dieta orientativa y contacto con Miguel."},
+ vip:{n:"VIP (Entrenador Pro)",precio:9.99,d:"Todo lo del Básico + 1 revisión de técnica por video al mes + ajuste personalizado de Miguel + prioridad."},
+ premium:{n:"Premium (Salud)",precio:19.99,d:"VIP + 1 consulta/mes con nutricionista o médico.",soon:true}
+};
+const PAID=["basico","vip","premium"];
+const DEMO_PLANS=1, DEMO_CHATS=5;
+function vigente(s){if(!s)return false;if(s.rol==="superadmin")return true;if(!PAID.includes(s.plan))return false;if(!s.expira)return true;return new Date(s.expira)>=new Date()}
+function hasAgent(){return hasSession()&&vigente(ses())}
+function hasSession(){return !!ses()}
+function demo(){return store.get("bb_demo",{plans:0,chats:0})}
+function demoUse(k){const d=demo();d[k]=(d[k]||0)+1;store.set("bb_demo",d);return d}
+function paywallHTML(msg){return `<div class="ej paywall"><b>🔒 ${msg||"Función del Agente para suscriptores"}</b><br><span class="muted small">El agente entrenador completo (plan por días, técnica y dieta orientativa) es parte de los planes <b>Básico ($4.99)</b> y <b>VIP ($9.99)</b>. Ahora estás en <b>Free</b>.</span><div class="row"><button id="pwGo">Ver planes y suscribirme</button></div></div>`}
+function showPaywall(msg){const pl=$("a_plan");if(pl){pl.innerHTML=paywallHTML(msg);const b=$("pwGo");if(b)b.onclick=()=>switchTab("sus");pl.scrollIntoView({behavior:"smooth"})}}
+function applyAgentBanner(){const b=$("ageBanner");if(!b)return;const s=ses();if(hasAgent()){b.innerHTML=`<div class="ej ok"><b>✅ Plan ${(PLANES[s.plan]||{}).n||s.plan} activo</b>${s.expira?` · vence ${String(s.expira).slice(0,10)}`:""}</div>`}else{b.innerHTML=`<div class="ej warn"><b>🔓 Estás en Free (modo demostración)</b><br><span class="muted small">Tienes 1 plan de muestra y ${DEMO_CHATS} mensajes de prueba. Para el agente completo, suscríbete a Básico $4.99 o VIP $9.99.</span><div class="row"><button id="bnGo">Ver planes</button></div></div>`;const g=$("bnGo");if(g)g.onclick=()=>switchTab("sus")}}
+function renderSus(){
+ const s=ses();
+ const st=$("susEstado");
+ if(st){if(s){const cur=PLANES[s.plan]||{n:s.plan};st.innerHTML=`<b>Cuenta:</b> ${s.email}<br><b>Plan:</b> ${cur.n} ${vigente(s)?"✅ vigente":"⛔ no vigente"}${s.expira?` · vence ${String(s.expira).slice(0,10)}`:""}<br><b>Estado:</b> ${s.estado||"—"} · <b>Servicio:</b> ${s.servicio||"—"}`}else st.innerHTML=`<b>Aún no has ingresado.</b> Crea tu cuenta gratis o entra con tu correo para gestionar tu plan.`}
+ const cards=$("planCards");
+ if(cards){
+  cards.innerHTML=Object.entries(PLANES).map(([k,p])=>{const active=s&&s.plan===k;let btn="";
+   if(p.soon)btn='<button class="ghost" disabled>Próximamente</button>';
+   else if(k==="free")btn='<button class="ghost" disabled>Incluido</button>';
+   else btn=`<button data-plan="${k}">${active?"Renovar 30 días":"Suscribirme"}</button>`;
+   return `<div class="plan${active?" on":""}${p.soon?" soon":""}"><b>${p.n}</b><div class="price">${p.precio?("$"+p.precio.toFixed(2)+"<small>/mes</small>"):"Gratis"}</div><div class="muted small">${p.d}</div>${btn}</div>`}).join("");
+  cards.querySelectorAll("button[data-plan]").forEach(b=>b.onclick=()=>openPay(b.dataset.plan));
+ }
+ const admin=$("adminBox");if(admin)admin.classList.toggle("hidden",!(s&&(s.rol==="superadmin"||s.rol==="admin")));
+}
+let paySel=null;
+function payDataHTML(plan){const p=PLANES[plan];return `<b>${p.n} — $${p.precio.toFixed(2)}/mes</b><br><br><b>Transferencia / depósito</b><br>Banco: ${BANCO.banco} · ${BANCO.tipo}<br>N° cuenta: <b>${BANCO.cuenta}</b> <button class="cp" data-c="${BANCO.cuenta}">copiar</button><br>Titular: ${BANCO.titular}<br>Cédula: ${BANCO.cedula}<br><br><b>Pago móvil (BANRED)</b><br>Celular: <b>${BANCO.pagoMovil}</b> <button class="cp" data-c="${BANCO.pagoMovil}">copiar</button> · ${BANCO.banco} · Céd. ${BANCO.cedula}<br><br>Sube el comprobante aquí abajo o envíalo a <b>${BANCO.correo}</b>.<br><span class="muted small">Monto exacto: $${p.precio.toFixed(2)}. Escribe tu correo (${ses()?ses().email:""}) en la referencia.</span>`}
+function openPay(plan){if(!hasSession()){alert("Primero crea tu cuenta o ingresa (pantalla de Ingreso).");return}paySel=plan;const box=$("payBox");if(!box)return;$("payData").innerHTML=payDataHTML(plan);box.classList.remove("hidden");box.querySelectorAll(".cp").forEach(b=>b.onclick=()=>{const t=b.dataset.c;const done=()=>{b.textContent="¡copiado!";setTimeout(()=>b.textContent="copiar",1500)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done).catch(done);else done()});box.scrollIntoView({behavior:"smooth"})}
+$("payCancel").onclick=()=>$("payBox").classList.add("hidden");
+function fileB64(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(",")[1]);r.onerror=rej;r.readAsDataURL(f)})}
+$("payGo").onclick=async()=>{
+ const s=ses();const out=$("payOut");if(!s||!paySel){out.textContent="Ingresa y elige un plan.";return}
+ out.textContent="Enviando solicitud...";
+ try{
+  const serv=$("payServicio").value,ref=$("payRef").value.trim(),notas=$("payNotas").value.trim();
+  const j=await api({accion:"solicitar",email:s.email,plan:paySel,servicio:serv,referencia:ref,notas});
+  if(!j.ok){out.textContent=JSON.stringify(j);return}
+  const f=$("payFile").files[0];
+  if(f){out.textContent="Solicitud "+j.id+" enviada. Subiendo comprobante...";const up=await api({accion:"subirComprobante",email:s.email,id:j.id,nombre:f.name,mime:f.type||"application/octet-stream",base64:await fileB64(f)});out.textContent=JSON.stringify(up)}
+  else out.textContent=JSON.stringify({ok:true,id:j.id,mensaje:"Solicitud registrada sin comprobante. Envíalo por correo/WhatsApp."});
+  store.set("bb_ses",{...s,estado:"pendiente",servicio:serv});renderSus();applyAgentBanner();
+  alert("Solicitud enviada. Envía tu comprobante y avisa por WhatsApp. El administrador activará tu plan (30 días).");
+ }catch(e){out.textContent="Error: "+e}
+};
+$("admLoad").onclick=async()=>{
+ const s=ses();const out=$("admOut"),list=$("admList");if(!s)return;
+ out.textContent="Cargando...";
+ try{
+  const j=await api({accion:"adminListar",email_admin:s.email,clave_admin:s.clave});
+  out.textContent=JSON.stringify(j);
+  if(j.ok&&j.solicitudes){
+   $("admCount").textContent=j.solicitudes.length+" pendientes";
+   list.innerHTML=j.solicitudes.map(x=>`<div class="ej"><b>${x.id}</b> · ${x.email} · <b>${(PLANES[x.plan]||{}).n||x.plan}</b> · $${x.monto}${x.referencia?" · ref "+x.referencia:""}<br><span class="muted small">${x.fecha||""}${x.comprobante_url?` · <a href="${x.comprobante_url}" target="_blank" rel="noopener">ver comprobante</a>`:""}</span><div class="row"><button data-ok="${x.id}" data-plan="${x.plan}">Aprobar 30 días</button><button class="ghost" data-no="${x.id}">Rechazar</button></div></div>`).join("");
+   list.querySelectorAll("button[data-ok]").forEach(b=>b.onclick=async()=>{const r=await api({accion:"adminAprobar",email_admin:s.email,clave_admin:s.clave,id:b.dataset.ok,plan:b.dataset.plan,dias:30});out.textContent=JSON.stringify(r)});
+   list.querySelectorAll("button[data-no]").forEach(b=>b.onclick=async()=>{const r=await api({accion:"adminRechazar",email_admin:s.email,clave_admin:s.clave,id:b.dataset.no});out.textContent=JSON.stringify(r)});
+  }
+ }catch(e){out.textContent="Error: "+e}
+};
+async function refreshEstado(){const s=ses();if(!s)return;try{const j=await api({accion:"estado",email:s.email});if(j.ok){store.set("bb_ses",{...s,plan:j.plan,rol:j.rol||s.rol,estado:j.estado,servicio:j.servicio,expira:j.expira,vigente:!!j.vigente});renderSus();applyAgentBanner()}}catch(e){}}
 
 /* init */
-applyLang();applyTheme();initRuts();renderH();renderLegal();checkGate();checkLogin();initBib();initFuentes();
+applyLang();applyTheme();initRuts();renderH();renderLegal();checkGate();checkLogin();initBib();initFuentes();renderSus();applyAgentBanner();
 $("r_ej").addEventListener("input",showPrev);
 if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js");
+
+/* Gate del Agente (demo Free vs suscriptores) — corre tras los handlers de agent.js */
+document.addEventListener("DOMContentLoaded",()=>{
+ const gen=$("a_gen");
+ if(gen){const orig=gen.onclick;gen.onclick=(e)=>{
+   if(hasAgent()){return orig&&orig(e)}
+   const d=demo();
+   if((d.plans||0)<DEMO_PLANS){demoUse("plans");if(orig)orig(e)}
+   else showPaywall("Alcanzaste el límite del plan de demostración (1).")
+ }}
+ const send=$("chatSend");
+ if(send){const oc=send.onclick;send.onclick=()=>{
+   if(hasAgent())return oc&&oc();
+   const d=demo();
+   if((d.chats||0)<DEMO_CHATS){demoUse("chats");return oc&&oc()}
+   if(typeof add==="function")add("Agente","Llegaste al límite de mensajes de prueba (Free). Suscríbete para el agente completo.")
+ }}
+ refreshEstado();
+});
