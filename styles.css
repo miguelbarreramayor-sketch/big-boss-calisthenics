@@ -59,3 +59,64 @@ input,select{font-family:inherit}
 .wafab:hover{transform:scale(1.06)}
 @media(max-width:600px){main{padding:10px}.wafab{right:12px;bottom:12px;width:52px;height:52px}.wa-btn{width:100%;justify-content:center}.src,.ej{padding:7px}.topbtns{width:100%;justify-content:space-between}}
 @media(min-width:900px){main{max-width:1080px}}
+
+/* ===== HERO DINÁMICO (siluetas de calistenia + movimiento) ===== */
+.hero-photo{position:relative;overflow:hidden;display:grid;grid-template-columns:60px 1fr 60px;align-items:center;text-align:center;min-height:230px;padding:26px 6px 16px;background:radial-gradient(700px 260px at 50% 0%,#ff6a0055,transparent 70%),linear-gradient(180deg,#1c0e04,#0d0703 78%);border-bottom:3px solid transparent;border-image:var(--fire) 1}
+.hero-photo::before{content:"";position:absolute;inset:-40% -10%;z-index:0;background:radial-gradient(closest-side,#ff6a0040,transparent 72%);animation:heroPulse 6s ease-in-out infinite;pointer-events:none}
+.hero-photo::after{content:"";position:absolute;inset:0;z-index:0;background:radial-gradient(420px 170px at 12% 118%,#ff3d0038,transparent),radial-gradient(420px 170px at 88% 118%,#ffb30038,transparent);animation:drift 9s ease-in-out infinite alternate;pointer-events:none}
+.hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.athletes{position:absolute;inset:0;width:100%;height:100%;opacity:.5;filter:drop-shadow(0 0 10px #ff6a0066)}
+.athletes .fig{opacity:.92}
+.hero-photo .hero-bg::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(180deg,transparent,#0d0703)}
+.fig{fill:none;stroke:url(#fk);stroke-width:16;stroke-linecap:round;stroke-linejoin:round}
+.hd{fill:url(#fk);stroke:none}
+.fig.f1{animation:float1 4.6s ease-in-out infinite}
+.fig.f2{animation:float2 5.6s ease-in-out infinite}
+.fig.f3{animation:float3 6.4s ease-in-out infinite}
+.fig.f4{animation:float2 7.2s ease-in-out infinite}
+@keyframes float1{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+@keyframes float2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes float3{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-7px) rotate(-1.4deg)}}
+@keyframes heroPulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:.95;transform:scale(1.06)}}
+@keyframes drift{from{transform:translateX(-16px)}to{transform:translateX(16px)}}
+.embers{position:absolute;inset:0;z-index:0}
+.embers i{position:absolute;bottom:-12px;width:6px;height:6px;border-radius:50%;background:#ffb300;box-shadow:0 0 10px #ff6a00;opacity:0;animation:rise 7s linear infinite}
+.embers i:nth-child(1){left:6%;animation-delay:0s}
+.embers i:nth-child(2){left:16%;animation-delay:1.4s;animation-duration:8.2s}
+.embers i:nth-child(3){left:27%;animation-delay:3.1s}
+.embers i:nth-child(4){left:38%;animation-delay:.7s;animation-duration:9s}
+.embers i:nth-child(5){left:49%;animation-delay:2.2s}
+.embers i:nth-child(6){left:60%;animation-delay:4.4s;animation-duration:8.5s}
+.embers i:nth-child(7){left:71%;animation-delay:1s}
+.embers i:nth-child(8){left:80%;animation-delay:3.6s;animation-duration:7.6s}
+.embers i:nth-child(9){left:90%;animation-delay:5.2s}
+.embers i:nth-child(10){left:96%;animation-delay:2.6s;animation-duration:9.4s}
+@keyframes rise{0%{transform:translateY(0) scale(.6);opacity:0}12%{opacity:.9}70%{opacity:.7}100%{transform:translateY(-300px) scale(1.15);opacity:0}}
+.flame{position:relative;z-index:2;animation:flicker 1.6s ease-in-out infinite}
+@keyframes flicker{0%,100%{transform:translateY(0) scale(1);filter:drop-shadow(0 0 10px #ff6a00)}50%{transform:translateY(-4px) scale(1.08);filter:drop-shadow(0 0 20px #ffb300)}}
+.hero-center{position:relative;z-index:2}
+.logo-wrap{position:relative;display:inline-block}
+.logo-wrap::before{content:"";position:absolute;inset:-11px;border-radius:26px;border:2px dashed #ffb30055;animation:spin 16s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero-center img{width:150px;height:150px;border-radius:18px;border:3px solid var(--ac2);object-fit:cover;display:block;animation:logoGlow 3.4s ease-in-out infinite}
+@keyframes logoGlow{0%,100%{box-shadow:0 0 22px #ff6a0088;transform:scale(1)}50%{box-shadow:0 0 48px #ffb300cc;transform:scale(1.03)}}
+.hero-sub{margin:8px 0 4px;color:var(--mut);font-size:13px;font-weight:700;letter-spacing:.4px}
+@media(prefers-reduced-motion:reduce){.hero-photo *,.embers i,.fig,.flame{animation:none!important}}
+
+/* ===== Cambio de pestaña + marca de agua por sección ===== */
+.tab{position:relative;isolation:isolate;overflow:hidden;min-height:52vh}
+.tab::before{position:absolute;top:2px;right:-10px;font-size:180px;line-height:1;opacity:.05;z-index:0;pointer-events:none;transform:rotate(-8deg);filter:drop-shadow(0 0 24px #ff6a0033)}
+.tab>*{position:relative;z-index:1}
+#tab-rut::before{content:"💪"}
+#tab-bib::before{content:"📖"}
+#tab-age::before{content:"🤖"}
+#tab-reg::before{content:"📝"}
+#tab-his::before{content:"📊"}
+#tab-int::before{content:"☁️"}
+#tab-per::before{content:"🛡️"}
+#tab-fue::before{content:"📚"}
+.tab.on{animation:tabIn .34s cubic-bezier(.2,.7,.3,1)}
+@keyframes tabIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media(max-width:600px){.tab::before{font-size:122px;right:-14px;opacity:.055}.tab{min-height:44vh}}
+@media(prefers-reduced-motion:reduce){.tab.on{animation:none}}
+@media(max-width:600px){.hero-photo{grid-template-columns:36px 1fr 36px;min-height:190px;padding:16px 4px 12px}.hero-center img{width:118px;height:118px}.v-big{font-size:40px}.flame{font-size:30px}.hero-sub{font-size:11px}.athletes{opacity:.4}}
