@@ -2,7 +2,7 @@
 const BRAND = "BIG BOSS CALISTHENICS";
 const EXEC_DEFAULT = "https://script.google.com/macros/s/AKfycbxaecJsfPS8WVk6IkL717174AJhnz3VuAhaQl65-_rZw88McegZ7MVHI7Xfe6LbMk_BoQ/exec";
 const TOK_DEFAULT = "BIGBOSS_2026_cambia_esto";
-const DOCV = "v1.3 17-oct-2026";
+const DOCV = "v1.4 17-oct-2026";
 const $ = id => document.getElementById(id);
 const store = {
   get:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}},
@@ -11,8 +11,8 @@ const store = {
 
 /* i18n */
 const I = {
-es:{gate_t:"Antes de continuar",gate_d:"BIG BOSS CALISTHENICS es entrenamiento general (calistenia y mancuernas). No es servicio médico: no diagnostica, no receta, no certifica aptitud. Entrenar implica riesgos. Detén y busca atención ante dolor torácico, desmayo, dificultad respiratoria inusual o palpitaciones intensas.",gate_v:"Docs v1.2 16-oct-2026",cT:"Obligatoria: Acepto Términos y Condiciones",cP:"Confirmo que pude consultar la Política de Privacidad",cS:"Opcional sensible: autorizo datos salud/actividad para personalizar (revocable, modo básico sin esto)",cSheet:"Opcional: exportar entrenos a mi Google Sheet",cMkt:"Opcional: comunicaciones comerciales",go:"Aceptar y continuar",no:"No aceptar / Salir",t1:"Rutinas",t2:"Registrar",t3:"Historial",t4:"Sheet/Drive",t5:"Perfil/Legal",t6:"Fuentes",timer:"Temporizador descanso",reg_t:"Registro rápido (offline)",save:"Guardar local",reg_h:"Se guarda en el dispositivo aunque no haya internet. Luego envíalo a Sheet/Drive.",del:"Borrar locales",inst:"⬇ Instalar"},
-en:{gate_t:"Before continuing",gate_d:"BIG BOSS CALISTHENICS is general training (calisthenics + dumbbells). Not medical: no diagnosis, no prescription, no fitness clearance. Training has risks. Stop and seek care for chest pain, fainting, unusual breathing difficulty or strong palpitations.",gate_v:"Docs v1.2 Oct-16-2026",cT:"Required: I accept Terms & Conditions",cP:"I confirm I could review the Privacy Policy",cS:"Optional health: authorize health/activity data to personalize (revocable, basic mode without it)",cSheet:"Optional: export workouts to my Google Sheet",cMkt:"Optional: marketing messages",go:"Accept & continue",no:"Decline / Exit",t1:"Routines",t2:"Log",t3:"History",t4:"Sheet/Drive",t5:"Profile/Legal",t6:"Sources",timer:"Rest timer",reg_t:"Quick log (offline)",save:"Save locally",reg_h:"Stored on device even offline. Then send to Sheet/Drive.",del:"Clear local",inst:"⬇ Install"}
+es:{gate_t:"Antes de continuar",gate_d:"BIG BOSS CALISTHENICS es entrenamiento general (calistenia y mancuernas). No es servicio médico: no diagnostica, no receta, no certifica aptitud. Entrenar implica riesgos. Detén y busca atención ante dolor torácico, desmayo, dificultad respiratoria inusual o palpitaciones intensas.",gate_v:"Docs v1.4 17-oct-2026",cT:"Obligatoria: Acepto Términos y Condiciones",cP:"Confirmo que pude consultar la Política de Privacidad",cS:"Opcional sensible: autorizo datos salud/actividad para personalizar (revocable, modo básico sin esto)",cSheet:"Opcional: exportar entrenos a mi Google Sheet",cMkt:"Opcional: comunicaciones comerciales",go:"Aceptar y continuar",no:"No aceptar / Salir",t1:"Rutinas",t2:"Registrar",t3:"Historial",t4:"Sheet/Drive",t5:"Perfil/Legal",t6:"Fuentes",timer:"Temporizador descanso",reg_t:"Registro rápido (offline)",save:"Guardar local",reg_h:"Se guarda en el dispositivo aunque no haya internet. Luego envíalo a Sheet/Drive.",del:"Borrar locales",inst:"⬇ Instalar"},
+en:{gate_t:"Before continuing",gate_d:"BIG BOSS CALISTHENICS is general training (calisthenics + dumbbells). Not medical: no diagnosis, no prescription, no fitness clearance. Training has risks. Stop and seek care for chest pain, fainting, unusual breathing difficulty or strong palpitations.",gate_v:"Docs v1.4 Oct-17-2026",cT:"Required: I accept Terms & Conditions",cP:"I confirm I could review the Privacy Policy",cS:"Optional health: authorize health/activity data to personalize (revocable, basic mode without it)",cSheet:"Optional: export workouts to my Google Sheet",cMkt:"Optional: marketing messages",go:"Accept & continue",no:"Decline / Exit",t1:"Routines",t2:"Log",t3:"History",t4:"Sheet/Drive",t5:"Profile/Legal",t6:"Sources",timer:"Rest timer",reg_t:"Quick log (offline)",save:"Save locally",reg_h:"Stored on device even offline. Then send to Sheet/Drive.",del:"Clear local",inst:"⬇ Install"}
 };
 let lang = store.get("bb_lang","es");
 function applyLang(){document.documentElement.lang=lang;document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;if(I[lang][k])el.textContent=I[lang][k]});$("btnES").classList.toggle("on",lang==="es");$("btnEN").classList.toggle("on",lang==="en");document.title=BRAND;}
@@ -29,15 +29,15 @@ let deferred=null;$("btnInstall").onclick=async()=>{if(deferred){deferred.prompt
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e});
 
 /* gate */
-const TERMS = BRAND+" — TÉRMINOS v1.3\nOperador: Miguel Andrés Barrera Mayor RUC 0919324582001 Guayaquil miguelbarreramayor@gmail.com +593985718915\nObjeto: app entrenamiento general calistenia+mancuernas. NO médico: no diagnostica/receta/certifica.\nRutinas: material general revisado por Miguel Barrera (no médico). Usuario ejecuta bajo su responsabilidad, detiene ante síntomas alarma.\nCuenta personal, credenciales intransferibles. PI del Prestador. Offline-first; IA/nube/pagos requieren internet.\nSUSCRIPCIÓN: planes Free (gratis), Básico (USD 4.99/mes) y VIP (USD 9.99/mes). El Agente entrenador completo es función de pago.\nPagos (etapa actual, sin pasarela): transferencia/depósito y pago móvil a la cuenta indicada; el usuario sube el comprobante y el Prestador activa el plan (30 días) tras verificar el pago.\nActivación manual: la suscripción se otorga a discreción del Prestador una vez confirmado el pago. Vencimiento: al terminar el periodo, la cuenta vuelve a Free.\nReembolsos/cancelación: no hay cargos automáticos; al ser activación manual por transferencia, las solicitudes rechazadas no generan cobro. Reclamos dentro de 15 días al correo de contacto.\nFacturación: comprobantes según normativa tributaria de Ecuador; el Prestador factura a nombre del titular del pago.\nServicios de salud (nutricionista/médico): BLOQUEADOS hasta contar con profesionales verificados; se anunciarán como 'próximamente'.\nVersiones: cambio material exige re-aceptación. Ley Ecuador, Guayaquil.\nRedes: youtube.com/channel/UCIFIKoCjdTceduUQVU5duGw · IG @big_boss_calisthenics · TikTok @miguelbigbosscalistheni1";
+const TERMS = BRAND+" — TÉRMINOS v1.4\nOperador: Miguel Andrés Barrera Mayor RUC 0919324582001 Guayaquil miguelbarreramayor@gmail.com +593985718915\nObjeto: app entrenamiento general calistenia+mancuernas. NO médico: no diagnostica/receta/certifica.\nRutinas: material general revisado por Miguel Barrera (no médico). Usuario ejecuta bajo su responsabilidad, detiene ante síntomas alarma.\nCuenta personal, credenciales intransferibles. PI del Prestador. Offline-first; IA/nube/pagos requieren internet.\nSUSCRIPCIÓN: planes Free (gratis), Básico (USD 4.99/mes) y VIP (USD 9.99/mes). El Agente entrenador completo es función de pago.\nPagos: transferencia/depósito o pago móvil a la cuenta indicada (el usuario sube el comprobante y el Prestador activa el plan tras verificarlo), o pago en línea por pasarela cuando esté habilitada. Cupones de descuento válidos según condiciones anunciadas en la app (un cupón por compra; no acumulables salvo indicación expresa).\nActivación: la suscripción se otorga a discreción del Prestador una vez confirmado el pago. Vencimiento: al terminar el periodo, la cuenta vuelve a Free.\nReembolsos/cancelación: no hay cargos automáticos; al ser activación manual por transferencia, las solicitudes rechazadas no generan cobro. Reclamos dentro de 15 días al correo de contacto.\nFacturación: comprobantes según normativa tributaria de Ecuador; el Prestador factura a nombre del titular del pago.\nServicios de salud (nutricionista/médico): BLOQUEADOS hasta contar con profesionales verificados; se anunciarán como 'próximamente'.\nVersiones: cambio material exige re-aceptación. Ley Ecuador, Guayaquil.\nRedes: youtube.com/channel/UCIFIKoCjdTceduUQVU5duGw · IG @big_boss_calisthenics · TikTok @miguelbigbosscalistheni1";
 const PRIV = BRAND+" — PRIVACIDAD v1.2 LOPDP\nResponsable: Miguel A. Barrera Mayor. Contacto privacidad: miguelbarreramayor@gmail.com\nDatos: cuenta, perfil entreno opcional, sesiones, logs. Salud/actividad solo opt-in. MVP sin proveedores externos (local). Sheet/Drive solo opt-in revocable.\nDerechos (15 días): info/acceso/rectificación/eliminación/oposición/portabilidad en Perfil>Privacidad o email. Incidentes riesgo: 5 días Superintendencia. Conservación: entrenos 12m tras cierre, tributario 7a, logs 12m, derechos 3a.\nMenores: 18+ autónomo, 14-17 con tutor, <14 sin cuenta.";
-function gateNeeded(){const a=store.get("bb_accept",null);return !(a&&a.terms==="v1.3"&&a.priv==="v1.2")}
+function gateNeeded(){const a=store.get("bb_accept",null);return !(a&&a.terms==="v1.4"&&a.priv==="v1.2")}
 function showGate(v){$("gate").classList.toggle("hidden",!v)}
 function checkGate(){$("btnGate").disabled=!($("cT").checked&&$("cP").checked);showGate(gateNeeded())}
 ["cT","cP"].forEach(id=>$(id).addEventListener("change",checkGate));
 $("verT").onclick=()=>{const d=$("docView");d.classList.remove("hidden");d.textContent=TERMS};
 $("verP").onclick=()=>{const d=$("docView");d.classList.remove("hidden");d.textContent=PRIV};
-$("btnGate").onclick=()=>{store.set("bb_accept",{brand:BRAND,terms:"v1.3",priv:"v1.2",date:new Date().toISOString(),sens:$("cS").checked,sheet:$("cSheet").checked,mkt:$("cMkt").checked,lang});showGate(false);checkLogin();renderLegal()};
+$("btnGate").onclick=()=>{store.set("bb_accept",{brand:BRAND,terms:"v1.4",priv:"v1.2",date:new Date().toISOString(),sens:$("cS").checked,sheet:$("cSheet").checked,mkt:$("cMkt").checked,lang});showGate(false);checkLogin();renderLegal()};
 $("btnNo").onclick=()=>{alert("Debes aceptar lo obligatorio para usar "+BRAND)};
 
 /* ===== Biblioteca helpers (id + imagen) ===== */
@@ -104,16 +104,18 @@ async function api(payload){const r=await fetch($("iURL").value||EXEC_DEFAULT,{m
 $("bReg").onclick=async()=>{try{const j=await api({accion:"registro",email:$("l_email").value,alias:$("l_email").value.split("@")[0],clave:$("l_clave").value});$("lOut").textContent=JSON.stringify(j);if(j.ok)alert("Cuenta free creada. Ahora Entra.")}catch(e){$("lOut").textContent="Error: "+e}};
 $("bLogin").onclick=async()=>{try{const j=await api({accion:"login",email:$("l_email").value,clave:$("l_clave").value});$("lOut").textContent=JSON.stringify(j);if(j.ok){store.set("bb_ses",{email:$("l_email").value,clave:$("l_clave").value,alias:j.alias,plan:j.plan,rol:j.rol,estado:j.estado||"free",servicio:j.servicio||"",expira:j.expira||"",vigente:!!j.vigente});store.set("bb_alias",j.alias);checkLogin();renderLegal();renderSus();applyAgentBanner();alert("Bienvenido "+j.alias+" · "+j.plan)}}catch(e){$("lOut").textContent="Error: "+e}};
 
-/* ===== Suscripción / planes (F1) ===== */
+/* ===== Suscripción / planes (F1-F3) ===== */
 const BANCO={banco:"Banco Bolivariano",tipo:"Cuenta de ahorro",cuenta:"0912001575",titular:"Miguel Barrera Mayor",cedula:"0919324582",pagoMovil:"+593 98 571 8915",correo:"miguelbarreramayor@gmail.com"};
+const SALUD_ACTIVO=false; /* <- poner true cuando haya nutricionista/médico verificados + revisión legal */
 const PLANES={
  free:{n:"Free",precio:0,d:"Biblioteca 54 + fichas técnicas, rutinas prediseñadas, registro/historial y export."},
- basico:{n:"Básico (Agente)",precio:4.99,d:"Agente entrenador completo: plan por días/grupos/full body, técnica, dieta orientativa y contacto con Miguel."},
- vip:{n:"VIP (Entrenador Pro)",precio:9.99,d:"Todo lo del Básico + 1 revisión de técnica por video al mes + ajuste personalizado de Miguel + prioridad."},
- premium:{n:"Premium (Salud)",precio:19.99,d:"VIP + 1 consulta/mes con nutricionista o médico.",soon:true}
+ basico:{n:"Básico (Agente)",precio:4.99,d:"Agente entrenador completo: plan por días/grupos/full body, técnica, dieta orientativa y contacto con Miguel.",desc:"Trimestral −10% · Anual −20%"},
+ vip:{n:"VIP (Entrenador Pro)",precio:9.99,d:"Todo lo del Básico + 1 revisión de técnica por video al mes + ajuste personalizado de Miguel + prioridad.",desc:"Trimestral −10% · Anual −20%"},
+ premium:{n:"Premium (Salud)",precio:19.99,d:"VIP + 1 consulta/mes con nutricionista o médico.",soon:!SALUD_ACTIVO}
 };
 const PAID=["basico","vip","premium"];
 const DEMO_PLANS=1, DEMO_CHATS=5;
+let cuponCur=null, pagoOnline=false;
 function vigente(s){if(!s)return false;if(s.rol==="superadmin")return true;if(!PAID.includes(s.plan))return false;if(!s.expira)return true;return new Date(s.expira)>=new Date()}
 function hasAgent(){return hasSession()&&vigente(ses())}
 function hasSession(){return !!ses()}
@@ -132,30 +134,34 @@ function renderSus(){
    if(p.soon)btn='<button class="ghost" disabled>Próximamente</button>';
    else if(k==="free")btn='<button class="ghost" disabled>Incluido</button>';
    else btn=`<button data-plan="${k}">${active?"Renovar 30 días":"Suscribirme"}</button>`;
-   return `<div class="plan${active?" on":""}${p.soon?" soon":""}"><b>${p.n}</b><div class="price">${p.precio?("$"+p.precio.toFixed(2)+"<small>/mes</small>"):"Gratis"}</div><div class="muted small">${p.d}</div>${btn}</div>`}).join("");
+   return `<div class="plan${active?" on":""}${p.soon?" soon":""}"><b>${p.n}</b><div class="price">${p.precio?("$"+p.precio.toFixed(2)+"<small>/mes</small>"):"Gratis"}</div><div class="muted small">${p.d}</div>${p.desc?`<div class="muted small">🎟️ ${p.desc}</div>`:""}${btn}</div>`}).join("");
   cards.querySelectorAll("button[data-plan]").forEach(b=>b.onclick=()=>openPay(b.dataset.plan));
  }
  const admin=$("adminBox");if(admin)admin.classList.toggle("hidden",!(s&&(s.rol==="superadmin"||s.rol==="admin")));
 }
 let paySel=null;
-function payDataHTML(plan){const p=PLANES[plan];return `<b>${p.n} — $${p.precio.toFixed(2)}/mes</b><br><br><b>Transferencia / depósito</b><br>Banco: ${BANCO.banco} · ${BANCO.tipo}<br>N° cuenta: <b>${BANCO.cuenta}</b> <button class="cp" data-c="${BANCO.cuenta}">copiar</button><br>Titular: ${BANCO.titular}<br>Cédula: ${BANCO.cedula}<br><br><b>Pago móvil (BANRED)</b><br>Celular: <b>${BANCO.pagoMovil}</b> <button class="cp" data-c="${BANCO.pagoMovil}">copiar</button> · ${BANCO.banco} · Céd. ${BANCO.cedula}<br><br>Sube el comprobante aquí abajo o envíalo a <b>${BANCO.correo}</b>.<br><span class="muted small">Monto exacto: $${p.precio.toFixed(2)}. Escribe tu correo (${ses()?ses().email:""}) en la referencia.</span>`}
-function openPay(plan){if(!hasSession()){alert("Primero crea tu cuenta o ingresa (pantalla de Ingreso).");return}paySel=plan;const box=$("payBox");if(!box)return;$("payData").innerHTML=payDataHTML(plan);box.classList.remove("hidden");box.querySelectorAll(".cp").forEach(b=>b.onclick=()=>{const t=b.dataset.c;const done=()=>{b.textContent="¡copiado!";setTimeout(()=>b.textContent="copiar",1500)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done).catch(done);else done()});box.scrollIntoView({behavior:"smooth"})}
+function precioFinal(){const p=PLANES[paySel];if(!p)return 0;return cuponCur?cuponCur.precioFinal:p.precio}
+function payDataHTML(plan){const p=PLANES[plan];const fp=precioFinal();const cup=cuponCur?`<div class="ej ok">🎟️ Cupón <b>${cuponCur.codigo}</b> aplicado (−$${cuponCur.descuento.toFixed(2)})</div>`:"";return `<b>${p.n} — ${cuponCur?`<s>$${p.precio.toFixed(2)}</s> `:""}$${fp.toFixed(2)}/mes</b>${cup}<br><br><b>Transferencia / depósito</b><br>Banco: ${BANCO.banco} · ${BANCO.tipo}<br>N° cuenta: <b>${BANCO.cuenta}</b> <button class="cp" data-c="${BANCO.cuenta}">copiar</button><br>Titular: ${BANCO.titular}<br>Cédula: ${BANCO.cedula}<br><br><b>Pago móvil (BANRED)</b><br>Celular: <b>${BANCO.pagoMovil}</b> <button class="cp" data-c="${BANCO.pagoMovil}">copiar</button> · ${BANCO.banco} · Céd. ${BANCO.cedula}<br><br>Sube el comprobante aquí abajo o envíalo a <b>${BANCO.correo}</b>.<br><span class="muted small">Monto exacto: <b>$${fp.toFixed(2)}</b>. Escribe tu correo (${ses()?ses().email:""}) en la referencia.</span>`}
+function paintPay(){const box=$("payBox");if(!box||!paySel)return;$("payData").innerHTML=payDataHTML(paySel);box.querySelectorAll(".cp").forEach(b=>b.onclick=()=>{const t=b.dataset.c;const done=()=>{b.textContent="¡copiado!";setTimeout(()=>b.textContent="copiar",1500)};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done).catch(done);else done()})}
+async function openPay(plan){if(!hasSession()){alert("Primero crea tu cuenta o ingresa (pantalla de Ingreso).");return}paySel=plan;cuponCur=null;const box=$("payBox");if(!box)return;const ci=$("payCupon");if(ci)ci.value="";paintPay();box.classList.remove("hidden");$("payOnline").classList.add("hidden");try{const inf=await api({accion:"pagoInfo"});if(inf&&inf.ok){pagoOnline=!!inf.activo;if(pagoOnline)$("payOnline").classList.remove("hidden")}}catch(e){}box.scrollIntoView({behavior:"smooth"})}
 $("payCancel").onclick=()=>$("payBox").classList.add("hidden");
+$("payCuponBtn").onclick=async()=>{if(!paySel)return;const code=$("payCupon").value.trim();const out=$("payOut");if(!code){cuponCur=null;paintPay();out.textContent="";return}out.textContent="Validando cupón...";try{const j=await api({accion:"cuponValidar",cupon:code,plan:paySel});if(j.ok){cuponCur={codigo:j.codigo,tipo:j.tipo,valor:j.valor,descuento:j.descuento,precioFinal:j.precioFinal};out.textContent="Cupón aplicado: −$"+j.descuento.toFixed(2)+" → $"+j.precioFinal.toFixed(2)}else{cuponCur=null;out.textContent="Cupón: "+(j.error||"no aplicable")}paintPay()}catch(e){out.textContent="Error: "+e}};
 function fileB64(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(",")[1]);r.onerror=rej;r.readAsDataURL(f)})}
 $("payGo").onclick=async()=>{
  const s=ses();const out=$("payOut");if(!s||!paySel){out.textContent="Ingresa y elige un plan.";return}
  out.textContent="Enviando solicitud...";
  try{
   const serv=$("payServicio").value,ref=$("payRef").value.trim(),notas=$("payNotas").value.trim();
-  const j=await api({accion:"solicitar",email:s.email,plan:paySel,servicio:serv,referencia:ref,notas});
+  const j=await api({accion:"solicitar",email:s.email,plan:paySel,servicio:serv,referencia:ref,notas,cupon:cuponCur?cuponCur.codigo:""});
   if(!j.ok){out.textContent=JSON.stringify(j);return}
   const f=$("payFile").files[0];
   if(f){out.textContent="Solicitud "+j.id+" enviada. Subiendo comprobante...";const up=await api({accion:"subirComprobante",email:s.email,id:j.id,nombre:f.name,mime:f.type||"application/octet-stream",base64:await fileB64(f)});out.textContent=JSON.stringify(up)}
   else out.textContent=JSON.stringify({ok:true,id:j.id,mensaje:"Solicitud registrada sin comprobante. Envíalo por correo/WhatsApp."});
   store.set("bb_ses",{...s,estado:"pendiente",servicio:serv});renderSus();applyAgentBanner();
-  alert("Solicitud enviada. Envía tu comprobante y avisa por WhatsApp. El administrador activará tu plan (30 días).");
+  alert("Solicitud enviada"+(j.monto?" por $"+j.monto:"")+". Envía tu comprobante y avisa por WhatsApp. El administrador activará tu plan (30 días).");
  }catch(e){out.textContent="Error: "+e}
 };
+$("payOnline").onclick=async()=>{const s=ses();const out=$("payOut");if(!s||!paySel)return;out.textContent="Generando pago en línea...";try{const j=await api({accion:"pagoLink",email:s.email,plan:paySel,cupon:cuponCur?cuponCur.codigo:""});if(!j.ok){out.textContent="Pago en línea: "+j.error;return}out.textContent=JSON.stringify(j);const url=j.payWithCard||j.payWithPayPhone;if(url)window.open(url,"_blank","noopener");store.set("bb_ses",{...s,estado:"pendiente"});renderSus()}catch(e){out.textContent="Error: "+e}};
 $("admLoad").onclick=async()=>{
  const s=ses();const out=$("admOut"),list=$("admList");if(!s)return;
  out.textContent="Cargando...";
@@ -170,10 +176,15 @@ $("admLoad").onclick=async()=>{
   }
  }catch(e){out.textContent="Error: "+e}
 };
+$("cupCrear").onclick=async()=>{const s=ses();const out=$("admOut");if(!s)return;try{const j=await api({accion:"adminCuponCrear",email_admin:s.email,clave_admin:s.clave,codigo:$("cupCodigo").value,tipo:$("cupTipo").value,valor:$("cupValor").value,usos_max:$("cupUsos").value,expira:$("cupExpira").value});out.textContent=JSON.stringify(j);if(j.ok){$("cupCodigo").value="";$("cupValor").value="";$("cupUsos").value="";$("cupExpira").value=""}}catch(e){out.textContent="Error: "+e}};
+$("cupListar").onclick=async()=>{const s=ses();const list=$("cupList"),out=$("admOut");if(!s)return;out.textContent="Cargando cupones...";try{const j=await api({accion:"adminCuponListar",email_admin:s.email,clave_admin:s.clave});out.textContent=JSON.stringify(j);if(j.ok&&j.cupones){list.innerHTML=(j.cupones.map(c=>`<div class="ej">🎟️ <b>${c.codigo}</b> · ${c.tipo==="%"?(c.valor+"%"):("$"+c.valor)} · usos ${c.usos}/${c.usos_max||"∞"} · ${c.activo?"✅ activo":"⛔ inactivo"}${c.expira?(" · exp "+String(c.expira).slice(0,10)):""}<div class="row"><button class="ghost" data-cup="${c.codigo}">${c.activo?"Desactivar":"Activar"}</button></div></div>`).join(""))||"<span class='muted small'>Sin cupones.</span>";list.querySelectorAll("button[data-cup]").forEach(b=>b.onclick=async()=>{const r=await api({accion:"adminCuponToggle",email_admin:s.email,clave_admin:s.clave,codigo:b.dataset.cup});out.textContent=JSON.stringify(r);$("cupListar").click()})}}catch(e){out.textContent="Error: "+e}};
+$("recLoad").onclick=async()=>{const s=ses();const list=$("recList"),out=$("recOut");if(!s)return;out.textContent="Cargando...";try{const j=await api({accion:"adminRecordatorios",email_admin:s.email,clave_admin:s.clave});out.textContent=JSON.stringify(j);if(j.ok){list.innerHTML=((j.usuarios||[]).map(u=>`<div class="ej">${u.email} · <b>${u.plan}</b> · ${u.dias<0?("vencido hace "+Math.abs(u.dias)+"d"):("vence en "+u.dias+"d")} · ${String(u.expira).slice(0,10)}</div>`).join(""))||"<span class='muted small'>Nadie por vencer en 7 días.</span>"}}catch(e){out.textContent="Error: "+e}};
+$("recSend").onclick=async()=>{const s=ses();const out=$("recOut");if(!s)return;out.textContent="Enviando recordatorios...";try{const j=await api({accion:"adminEnviarRecordatorios",email_admin:s.email,clave_admin:s.clave});out.textContent=JSON.stringify(j)}catch(e){out.textContent="Error: "+e}};
+function applySalud(){["optNutri","optMedico","optCompleto"].forEach(id=>{const el=$(id);if(el)el.disabled=!SALUD_ACTIVO})}
 async function refreshEstado(){const s=ses();if(!s)return;try{const j=await api({accion:"estado",email:s.email});if(j.ok){store.set("bb_ses",{...s,plan:j.plan,rol:j.rol||s.rol,estado:j.estado,servicio:j.servicio,expira:j.expira,vigente:!!j.vigente});renderSus();applyAgentBanner()}}catch(e){}}
 
 /* init */
-applyLang();applyTheme();initRuts();renderH();renderLegal();checkGate();checkLogin();initBib();initFuentes();renderSus();applyAgentBanner();
+applyLang();applyTheme();initRuts();renderH();renderLegal();checkGate();checkLogin();initBib();initFuentes();renderSus();applyAgentBanner();applySalud();
 $("r_ej").addEventListener("input",showPrev);
 if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js");
 
