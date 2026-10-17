@@ -53,10 +53,15 @@ const RUTS = {
 function myPlan(){try{return (typeof plan==="function"&&typeof prof==="function")?plan(prof()):[]}catch(e){return []}}
 function initRuts(){const s=$("selRut");s.innerHTML="";const o0=document.createElement("option");o0.value="MI PLAN";o0.textContent="MI PLAN (días del Agente)";s.appendChild(o0);Object.keys(RUTS).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=k;s.appendChild(o)});updDias();s.onchange=updDias;$("selDia").onchange=updEj}
 function updDias(){const v=$("selRut").value;const d=$("selDia");d.innerHTML="";if(v==="MI PLAN"){myPlan().forEach(x=>{const o=document.createElement("option");o.textContent=x.dia;d.appendChild(o)})}else{const r=RUTS[v];Object.keys(r).forEach(k=>{const o=document.createElement("option");o.textContent=k;d.appendChild(o)})}updEj()}
+function renderMiPlan(){const pl=myPlan();const day=pl[$("selDia").selectedIndex];const p=(typeof prof==="function"?prof():{estilo:"auto",obj:""});
+ $("listaEj").innerHTML=`<p class="muted small"><b>${day?day.foco:""}</b> · modo ${p.estilo==="auto"?"AUTO":(p.estilo||"").toUpperCase()} · objetivo ${p.obj} — se arma según tus días/tipo elegidos en la pestaña Agente.</p>`+(day?day.ej:[]).map(e=>`<div class="ej exrow"><img class="thumb" src="./img/${e.id}.png" alt="${e.n}" onerror="this.style.display='none'"><div><b>${e.n}</b> · ${e.dosis} · desc ${e.desc}s <button data-e="${e.id}">＋</button></div></div>`).join("");
+ document.querySelectorAll("#listaEj button").forEach(b=>b.onclick=()=>setReg(b.dataset.e))}
+function agentGateRutinas(){const s=ses();const usado=(s&&+s.demoPlan)||0;const canDemo=hasSession()&&usado<DEMO_PLAN;
+ $("listaEj").innerHTML=`<div class="ej paywall"><b>🔒 "MI PLAN" es parte del Agente entrenador</b><br><span class="muted small">Usa el mismo agente (plan por días, técnica y dieta orientativa), incluido en <b>Básico ($4.99)</b> y <b>VIP ($9.99)</b>. ${canDemo?`Te queda <b>${DEMO_PLAN-usado}</b> plan de muestra.`:"Ya usaste tu plan de muestra."}</span><div class="row">${canDemo?'<button id="mpDemo">Ver mi plan (demo)</button>':''}<button id="mpPlanes" class="ghost">Ver planes</button></div></div>`;
+ const b=$("mpDemo");if(b)b.onclick=async()=>{if(await agentPermitido("plan",true)){renderMiPlan()}else{agentGateRutinas()}};
+ const c=$("mpPlanes");if(c)c.onclick=()=>switchTab("sus")}
 function updEj(){const v=$("selRut").value;
- if(v==="MI PLAN"){const pl=myPlan();const day=pl[$("selDia").selectedIndex];const p=(typeof prof==="function"?prof():{estilo:"auto",obj:""});
-  $("listaEj").innerHTML=`<p class="muted small"><b>${day?day.foco:""}</b> · modo ${p.estilo==="auto"?"AUTO":(p.estilo||"").toUpperCase()} · objetivo ${p.obj} — se arma según tus días/tipo elegidos en la pestaña Agente.</p>`+(day?day.ej:[]).map(e=>`<div class="ej exrow"><img class="thumb" src="./img/${e.id}.png" alt="${e.n}" onerror="this.style.display='none'"><div><b>${e.n}</b> · ${e.dosis} · desc ${e.desc}s <button data-e="${e.id}">＋</button></div></div>`).join("");
-  document.querySelectorAll("#listaEj button").forEach(b=>b.onclick=()=>setReg(b.dataset.e));return}
+ if(v==="MI PLAN"){if(hasAgent()){renderMiPlan()}else{agentGateRutinas()}return}
  const arr=RUTS[v][$("selDia").value]||[];$("listaEj").innerHTML=arr.map(e=>{const b=bibById(e[0]);const nm=b?b.n:e[0];return `<div class="ej exrow"><img class="thumb" src="./img/${e[0]}.png" alt="${nm}" onerror="this.style.display='none'"><div><b>${nm}</b> · ${e[1]} <button data-e="${e[0]}">＋</button></div></div>`}).join("");document.querySelectorAll("#listaEj button").forEach(b=>b.onclick=()=>setReg(b.dataset.e))}
 function setReg(id){const b=bibById(id);$("r_ej").value=b?b.n:id;showPrev();switchTab("reg")}
 function showPrev(){const id=idFromName($("r_ej").value);const p=$("r_prev");if(!p)return;if(id){p.src="./img/"+id+".png";p.style.display="";const b=bibById(id);$("r_prevNote")&&($("r_prevNote").textContent=b?b.prim+" · "+b.dosis:"")}else{p.style.display="none";$("r_prevNote")&&($("r_prevNote").textContent="")}}
@@ -102,7 +107,7 @@ function ses(){return store.get("bb_ses",null)}
 function checkLogin(){const s=ses();const g=gateNeeded();$("login").classList.toggle("hidden",!!s||g)}
 async function api(payload){const r=await fetch($("iURL").value||EXEC_DEFAULT,{method:"POST",body:JSON.stringify({token:$("iTok").value||TOK_DEFAULT,...payload})});return r.json()}
 $("bReg").onclick=async()=>{try{const j=await api({accion:"registro",email:$("l_email").value,alias:$("l_email").value.split("@")[0],clave:$("l_clave").value});$("lOut").textContent=JSON.stringify(j);if(j.ok)alert("Cuenta free creada. Ahora Entra.")}catch(e){$("lOut").textContent="Error: "+e}};
-$("bLogin").onclick=async()=>{try{const j=await api({accion:"login",email:$("l_email").value,clave:$("l_clave").value});$("lOut").textContent=JSON.stringify(j);if(j.ok){store.set("bb_ses",{email:$("l_email").value,clave:$("l_clave").value,alias:j.alias,plan:j.plan,rol:j.rol,estado:j.estado||"free",servicio:j.servicio||"",expira:j.expira||"",vigente:!!j.vigente});store.set("bb_alias",j.alias);checkLogin();renderLegal();renderSus();applyAgentBanner();alert("Bienvenido "+j.alias+" · "+j.plan)}}catch(e){$("lOut").textContent="Error: "+e}};
+$("bLogin").onclick=async()=>{try{const j=await api({accion:"login",email:$("l_email").value,clave:$("l_clave").value});$("lOut").textContent=JSON.stringify(j);if(j.ok){store.set("bb_ses",{email:$("l_email").value,clave:$("l_clave").value,alias:j.alias,plan:j.plan,rol:j.rol,estado:j.estado||"free",servicio:j.servicio||"",expira:j.expira||"",vigente:!!j.vigente,demoPlan:(j.demo&&j.demo.plan)||0,demoChat:(j.demo&&j.demo.chat)||0});store.set("bb_alias",j.alias);checkLogin();renderLegal();renderSus();applyAgentBanner();alert("Bienvenido "+j.alias+" · "+j.plan)}}catch(e){$("lOut").textContent="Error: "+e}};
 
 /* ===== Suscripción / planes (F1-F3) ===== */
 const BANCO={banco:"Banco Bolivariano",tipo:"Cuenta de ahorro",cuenta:"0912001575",titular:"Miguel Barrera Mayor",cedula:"0919324582",pagoMovil:"+593 98 571 8915",correo:"miguelbarreramayor@gmail.com"};
@@ -114,16 +119,33 @@ const PLANES={
  premium:{n:"Premium (Salud)",precio:19.99,d:"VIP + 1 consulta/mes con nutricionista o médico.",soon:!SALUD_ACTIVO}
 };
 const PAID=["basico","vip","premium"];
-const DEMO_PLANS=1, DEMO_CHATS=5;
+const DEMO_PLAN=1, DEMO_CHAT=5;
 let cuponCur=null, pagoOnline=false;
 function vigente(s){if(!s)return false;if(s.rol==="superadmin")return true;if(!PAID.includes(s.plan))return false;if(!s.expira)return true;return new Date(s.expira)>=new Date()}
 function hasAgent(){return hasSession()&&vigente(ses())}
 function hasSession(){return !!ses()}
-function demo(){return store.get("bb_demo",{plans:0,chats:0})}
-function demoUse(k){const d=demo();d[k]=(d[k]||0)+1;store.set("bb_demo",d);return d}
+function demoRestante(){const s=ses();return {plan:Math.max(0,DEMO_PLAN-((s&&+s.demoPlan)||0)),chat:Math.max(0,DEMO_CHAT-((s&&+s.demoChat)||0))}}
+/* Permiso del Agente: suscriptores/admin ilimitado; Free consume la demo en el SERVIDOR (atada a la cuenta).
+   quiet=true -> no muestra paywall/alert (el llamador decide). */
+async function agentPermitido(tipo,quiet){
+ tipo=(tipo==="chat")?"chat":"plan";
+ if(hasAgent())return true;
+ if(!hasSession()){if(!quiet)showPaywall("Crea tu cuenta Free e inicia sesión para usar el Agente.");return false}
+ if(navigator.onLine===false){if(!quiet)alert("El Agente y su demo necesitan conexión a internet. Vuelve a intentar con red.");return false}
+ try{
+  const j=await api({accion:"demoCheck",email:ses().email,tipo});
+  if(j.ilimitado)return true;
+  if(j.ok){const s=ses();store.set("bb_ses",{...s,[tipo==="chat"?"demoChat":"demoPlan"]:j.usados});applyAgentBanner();
+   if(j.permitido)return true;
+   if(!quiet)showPaywall(tipo==="chat"?"Llegaste al límite de mensajes de prueba (Free). Suscríbete para el agente completo.":"Llegaste al límite del plan de demostración (Free). Suscríbete para el plan completo.");
+   return false}
+  if(!quiet)showPaywall(j.error||"No se pudo verificar tu cuenta. Inicia sesión.");
+  return false;
+ }catch(e){if(!quiet)alert("Sin conexión con el servidor. El Agente necesita internet para verificar tu cuenta.");return false}
+}
 function paywallHTML(msg){return `<div class="ej paywall"><b>🔒 ${msg||"Función del Agente para suscriptores"}</b><br><span class="muted small">El agente entrenador completo (plan por días, técnica y dieta orientativa) es parte de los planes <b>Básico ($4.99)</b> y <b>VIP ($9.99)</b>. Ahora estás en <b>Free</b>.</span><div class="row"><button id="pwGo">Ver planes y suscribirme</button></div></div>`}
 function showPaywall(msg){const pl=$("a_plan");if(pl){pl.innerHTML=paywallHTML(msg);const b=$("pwGo");if(b)b.onclick=()=>switchTab("sus");pl.scrollIntoView({behavior:"smooth"})}}
-function applyAgentBanner(){const b=$("ageBanner");if(!b)return;const s=ses();if(hasAgent()){b.innerHTML=`<div class="ej ok"><b>✅ Plan ${(PLANES[s.plan]||{}).n||s.plan} activo</b>${s.expira?` · vence ${String(s.expira).slice(0,10)}`:""}</div>`}else{b.innerHTML=`<div class="ej warn"><b>🔓 Estás en Free (modo demostración)</b><br><span class="muted small">Tienes 1 plan de muestra y ${DEMO_CHATS} mensajes de prueba. Para el agente completo, suscríbete a Básico $4.99 o VIP $9.99.</span><div class="row"><button id="bnGo">Ver planes</button></div></div>`;const g=$("bnGo");if(g)g.onclick=()=>switchTab("sus")}}
+function applyAgentBanner(){const b=$("ageBanner");if(!b)return;const s=ses();if(hasAgent()){b.innerHTML=`<div class="ej ok"><b>✅ Plan ${(PLANES[s.plan]||{}).n||s.plan} activo</b>${s.expira?` · vence ${String(s.expira).slice(0,10)}`:""}</div>`}else{const d=demoRestante();b.innerHTML=`<div class="ej warn"><b>🔓 Estás en Free (modo demostración)</b><br><span class="muted small">Tu muestra: <b>${d.plan}</b>/${DEMO_PLAN} plan · <b>${d.chat}</b>/${DEMO_CHAT} mensajes. El agente completo está en <b>Básico $4.99</b> o <b>VIP $9.99</b>.</span><div class="row"><button id="bnGo">Ver planes</button></div></div>`;const g=$("bnGo");if(g)g.onclick=()=>switchTab("sus")}}
 function renderSus(){
  const s=ses();
  const st=$("susEstado");
@@ -181,28 +203,20 @@ $("cupListar").onclick=async()=>{const s=ses();const list=$("cupList"),out=$("ad
 $("recLoad").onclick=async()=>{const s=ses();const list=$("recList"),out=$("recOut");if(!s)return;out.textContent="Cargando...";try{const j=await api({accion:"adminRecordatorios",email_admin:s.email,clave_admin:s.clave});out.textContent=JSON.stringify(j);if(j.ok){list.innerHTML=((j.usuarios||[]).map(u=>`<div class="ej">${u.email} · <b>${u.plan}</b> · ${u.dias<0?("vencido hace "+Math.abs(u.dias)+"d"):("vence en "+u.dias+"d")} · ${String(u.expira).slice(0,10)}</div>`).join(""))||"<span class='muted small'>Nadie por vencer en 7 días.</span>"}}catch(e){out.textContent="Error: "+e}};
 $("recSend").onclick=async()=>{const s=ses();const out=$("recOut");if(!s)return;out.textContent="Enviando recordatorios...";try{const j=await api({accion:"adminEnviarRecordatorios",email_admin:s.email,clave_admin:s.clave});out.textContent=JSON.stringify(j)}catch(e){out.textContent="Error: "+e}};
 function applySalud(){["optNutri","optMedico","optCompleto"].forEach(id=>{const el=$(id);if(el)el.disabled=!SALUD_ACTIVO})}
-async function refreshEstado(){const s=ses();if(!s)return;try{const j=await api({accion:"estado",email:s.email});if(j.ok){store.set("bb_ses",{...s,plan:j.plan,rol:j.rol||s.rol,estado:j.estado,servicio:j.servicio,expira:j.expira,vigente:!!j.vigente});renderSus();applyAgentBanner()}}catch(e){}}
+async function refreshEstado(){const s=ses();if(!s)return;try{const j=await api({accion:"estado",email:s.email});if(j.ok){store.set("bb_ses",{...s,plan:j.plan,rol:j.rol||s.rol,estado:j.estado,servicio:j.servicio,expira:j.expira,vigente:!!j.vigente,demoPlan:(j.demo&&j.demo.plan)||0,demoChat:(j.demo&&j.demo.chat)||0});renderSus();applyAgentBanner();updEj()}}catch(e){}}
 
 /* init */
 applyLang();applyTheme();initRuts();renderH();renderLegal();checkGate();checkLogin();initBib();initFuentes();renderSus();applyAgentBanner();applySalud();
 $("r_ej").addEventListener("input",showPrev);
 if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js");
 
-/* Gate del Agente (demo Free vs suscriptores) — corre tras los handlers de agent.js */
+/* Gate universal de generación de plan: cubre el botón "Generar mi plan" (agent.js setea a_gen.onclick=showPlan)
+   y cualquier llamada a showPlan() disparada desde el chat. Corre tras cargar agent.js (script previo). */
+try{const _sp=window.showPlan;if(typeof _sp==="function"){window.showPlan=async function(){if(await agentPermitido("plan"))return _sp.apply(this,arguments)}}}catch(e){}
+
+/* Gate del Agente (demo Free vs suscriptores) — chat + estado, corre tras los handlers de agent.js */
 document.addEventListener("DOMContentLoaded",()=>{
- const gen=$("a_gen");
- if(gen){const orig=gen.onclick;gen.onclick=(e)=>{
-   if(hasAgent()){return orig&&orig(e)}
-   const d=demo();
-   if((d.plans||0)<DEMO_PLANS){demoUse("plans");if(orig)orig(e)}
-   else showPaywall("Alcanzaste el límite del plan de demostración (1).")
- }}
  const send=$("chatSend");
- if(send){const oc=send.onclick;send.onclick=()=>{
-   if(hasAgent())return oc&&oc();
-   const d=demo();
-   if((d.chats||0)<DEMO_CHATS){demoUse("chats");return oc&&oc()}
-   if(typeof add==="function")add("Agente","Llegaste al límite de mensajes de prueba (Free). Suscríbete para el agente completo.")
- }}
+ if(send){const oc=send.onclick;send.onclick=async()=>{if(await agentPermitido("chat")){return oc&&oc()}}}
  refreshEstado();
 });
