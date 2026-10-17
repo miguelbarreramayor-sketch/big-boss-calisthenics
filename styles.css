@@ -23,5 +23,39 @@ main{padding:12px;max-width:1000px;margin:auto}.tab{display:none}.tab.on{display
 .chk{display:flex;gap:8px;align-items:flex-start;margin:8px 0}input,select{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px}input[type=checkbox]{width:18px;height:18px}
 .row{display:flex;gap:8px;align-items:center;margin:8px 0;flex-wrap:wrap}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.muted{color:var(--mut)}.small{font-size:12px}.doc{background:#00000055;border:1px solid var(--bd);border-radius:8px;padding:8px;white-space:pre-wrap;max-height:220px;overflow:auto}
 .ej{border:1px solid var(--bd);border-radius:10px;padding:8px;margin:8px 0;background:linear-gradient(180deg,#ffffff08,transparent)}.ej b{color:var(--ac2)}
+.exrow{display:flex;gap:10px;align-items:flex-start}.excard{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}.exbody{flex:1;min-width:200px}
+.thumb{width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);flex:0 0 auto;background:#00000033}
+.eximg{width:100%;max-height:200px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);display:block;margin-bottom:6px}
+.exprev{width:100%;max-width:320px;max-height:220px;object-fit:cover;border-radius:10px;border:1px solid var(--bd)}
+.ficha{margin-top:6px;border-top:1px dashed var(--bd);padding-top:6px;font-size:13px}.ficha summary{cursor:pointer;font-weight:800;color:var(--ac2)}.ficha div{margin:3px 0;padding-left:6px}
+.src{border:1px solid var(--bd);border-radius:10px;padding:10px;margin:8px 0;background:linear-gradient(180deg,#ffffff08,transparent)}.src b{color:var(--ac2)}.src a{color:var(--ac2);word-break:break-all;font-size:12px}.lic{color:var(--ac2);font-weight:700}
 .social{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;padding:14px;border-top:3px solid transparent;border-image:var(--fire) 1;margin-top:16px}.soc{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;font-weight:800;color:#fff;text-decoration:none}.soc svg{width:20px;height:20px;fill:#fff}.soc.yt{background:#c00}.soc.ig{background:linear-gradient(45deg,#f09433,#dc2743,#bc1888)}.soc.tt{background:#000;border:1px solid #333}.soc.fb{background:#1877f2}.social img.slogo{width:44px;height:44px;border-radius:12px;border:1px solid var(--ac2);object-fit:cover}
 @media(max-width:600px){.grid{grid-template-columns:1fr}.logo{width:44px;height:44px}.hero img{width:72px;height:72px}}
+
+/* ===== Mejoras de presentación (PC + móvil) ===== */
+*{scroll-behavior:smooth}
+button{transition:transform .08s ease,filter .15s ease}
+button:hover{filter:brightness(1.08)}
+button:active{transform:translateY(1px)}
+a,input,select,button:focus-visible{outline-offset:2px}
+a:focus-visible,input:focus,select:focus,button:focus-visible{outline:2px solid var(--ac2)}
+h3{font-family:Impact,Anton,Arial Black;letter-spacing:.5px;margin:16px 0 8px;background:var(--fire);-webkit-background-clip:text;background-clip:text;color:transparent}
+main{animation:fadein .25s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.src,.ej{transition:border-color .15s ease,box-shadow .15s ease}
+.src:hover,.ej:hover{border-color:var(--ac2);box-shadow:0 6px 20px #ff6a0022}
+input,select{font-family:inherit}
+.tabs button{transition:background .15s ease,color .15s ease}
+.tabs button:hover{filter:brightness(1.1)}
+.doc{line-height:1.45}
+.soc{transition:transform .1s ease,filter .15s ease}
+.soc:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.soc.wa{background:#25d366}
+.wa-btn{display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#062b13;font-weight:900;text-decoration:none;padding:11px 16px;border-radius:10px;text-transform:uppercase}
+.wa-btn svg{width:20px;height:20px;fill:#062b13}
+.wa-btn:hover{filter:brightness(1.08)}
+.wafab{position:fixed;right:16px;bottom:16px;z-index:60;background:#25d366;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px #0008,0 0 0 4px #25d36633;text-decoration:none}
+.wafab svg{width:30px;height:30px;fill:#fff}
+.wafab:hover{transform:scale(1.06)}
+@media(max-width:600px){main{padding:10px}.wafab{right:12px;bottom:12px;width:52px;height:52px}.wa-btn{width:100%;justify-content:center}.src,.ej{padding:7px}.topbtns{width:100%;justify-content:space-between}}
+@media(min-width:900px){main{max-width:1080px}}
