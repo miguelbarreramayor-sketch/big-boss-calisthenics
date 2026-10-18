@@ -56,9 +56,11 @@ function updDias(){const v=$("selRut").value;const d=$("selDia");d.innerHTML="";
 function renderMiPlan(){const pl=myPlan();const day=pl[$("selDia").selectedIndex];const p=(typeof prof==="function"?prof():{estilo:"auto",obj:""});
  $("listaEj").innerHTML=`<p class="muted small"><b>${day?day.foco:""}</b> · modo ${p.estilo==="auto"?"AUTO":(p.estilo||"").toUpperCase()} · objetivo ${p.obj} — se arma según tus días/tipo elegidos en la pestaña Agente.</p>`+(day?day.ej:[]).map(e=>`<div class="ej exrow"><img class="thumb" src="./img/${e.id}.png" alt="${e.n}" onerror="this.style.display='none'"><div><b>${e.n}</b> · ${e.dosis} · desc ${e.desc}s <button data-e="${e.id}">＋</button></div></div>`).join("");
  document.querySelectorAll("#listaEj button").forEach(b=>b.onclick=()=>setReg(b.dataset.e))}
-function agentGateRutinas(){const s=ses();const usado=(s&&+s.demoPlan)||0;const canDemo=hasSession()&&usado<DEMO_PLAN;
- $("listaEj").innerHTML=`<div class="ej paywall"><b>🔒 "MI PLAN" es parte del Agente entrenador</b><br><span class="muted small">Usa el mismo agente (plan por días, técnica y dieta orientativa), incluido en <b>Básico ($4.99)</b> y <b>VIP ($9.99)</b>. ${canDemo?`Te queda <b>${DEMO_PLAN-usado}</b> plan de muestra.`:"Ya usaste tu plan de muestra."}</span><div class="row">${canDemo?'<button id="mpDemo">Ver mi plan (demo)</button>':''}<button id="mpPlanes" class="ghost">Ver planes</button></div></div>`;
+function agentGateRutinas(){const s=ses();const guest=!s;const usado=(s&&+s.demoPlan)||0;const canDemo=hasSession()&&usado<DEMO_PLAN;
+ const cuerpo=guest?`Crea tu cuenta <b>Free</b> (gratis) para generar tu plan de muestra: <b>1 plan</b> y <b>5 mensajes</b>. El agente completo está en <b>Básico ($4.99)</b> y <b>VIP ($9.99)</b>.`:`Usa el mismo agente (plan por días, técnica y dieta orientativa), incluido en <b>Básico ($4.99)</b> y <b>VIP ($9.99)</b>. ${canDemo?`Te queda <b>${DEMO_PLAN-usado}</b> plan de muestra.`:"Ya usaste tu plan de muestra."}`;
+ $("listaEj").innerHTML=`<div class="ej paywall"><b>🔒 "MI PLAN" es parte del Agente entrenador</b><br><span class="muted small">${cuerpo}</span><div class="row">${guest?'<button id="mpLogin">👤 Crear cuenta Free</button>':(canDemo?'<button id="mpDemo">Ver mi plan (demo)</button>':'')}<button id="mpPlanes" class="ghost">Ver planes</button></div></div>`;
  const b=$("mpDemo");if(b)b.onclick=async()=>{if(await agentPermitido("plan",true)){renderMiPlan()}else{agentGateRutinas()}};
+ const lg=$("mpLogin");if(lg)lg.onclick=()=>openLogin();
  const c=$("mpPlanes");if(c)c.onclick=()=>switchTab("sus")}
 function updEj(){const v=$("selRut").value;
  if(v==="MI PLAN"){if(hasAgent()){renderMiPlan()}else{agentGateRutinas()}return}
@@ -104,10 +106,53 @@ function initFuentes(){const box=$("fuentesList");if(!box||typeof FUENTES==="und
 
 /* auth superadmin + suscripciones (v4) */
 function ses(){return store.get("bb_ses",null)}
-function checkLogin(){const s=ses();const g=gateNeeded();$("login").classList.toggle("hidden",!!s||g)}
+function checkLogin(){renderAccountBtn()}
 async function api(payload){const r=await fetch($("iURL").value||EXEC_DEFAULT,{method:"POST",body:JSON.stringify({token:$("iTok").value||TOK_DEFAULT,...payload})});return r.json()}
-$("bReg").onclick=async()=>{try{const j=await api({accion:"registro",email:$("l_email").value,alias:$("l_email").value.split("@")[0],clave:$("l_clave").value});$("lOut").textContent=JSON.stringify(j);if(j.ok)alert("Cuenta free creada. Ahora Entra.")}catch(e){$("lOut").textContent="Error: "+e}};
-$("bLogin").onclick=async()=>{try{const j=await api({accion:"login",email:$("l_email").value,clave:$("l_clave").value});$("lOut").textContent=JSON.stringify(j);if(j.ok){store.set("bb_ses",{email:$("l_email").value,clave:$("l_clave").value,alias:j.alias,plan:j.plan,rol:j.rol,estado:j.estado||"free",servicio:j.servicio||"",expira:j.expira||"",vigente:!!j.vigente,demoPlan:(j.demo&&j.demo.plan)||0,demoChat:(j.demo&&j.demo.chat)||0});store.set("bb_alias",j.alias);checkLogin();renderLegal();renderSus();applyAgentBanner();alert("Bienvenido "+j.alias+" · "+j.plan)}}catch(e){$("lOut").textContent="Error: "+e}};
+/* ===== Cuenta / Ingreso (modo invitado) ===== */
+function renderAccountBtn(){const b=$("btnAcct");if(b){const s=ses();b.textContent=s?("👤 "+(s.alias||s.email.split("@")[0])):"👤 Ingresar"}const o=$("bLogout");if(o)o.classList.toggle("hidden",!ses())}
+function openLogin(){const l=$("login");if(!l)return;l.classList.remove("hidden");setLoginMsg("");const e=$("l_email");if(e&&!e.value)e.focus()}
+function closeLogin(){const l=$("login");if(l)l.classList.add("hidden")}
+function setLoginMsg(t,bad){const o=$("lOut");if(!o)return;if(!t){o.classList.add("hidden");o.textContent="";return}o.textContent=t;o.style.color=bad?"var(--warn,#ff8080)":"var(--ac2)";o.classList.remove("hidden")}
+async function doLogin(email,clave,esNueva){
+  try{
+    const j=await api({accion:"login",email,clave});
+    if(!j.ok){setLoginMsg(esNueva?"Cuenta creada, pero no pude entrar. Escribe tu email y clave y pulsa «Ya tengo cuenta · Entrar».":"Email o clave incorrectos. Revísalos e intenta de nuevo.",true);return false}
+    store.set("bb_ses",{email,clave,alias:j.alias,plan:j.plan,rol:j.rol,estado:j.estado||"free",servicio:j.servicio||"",expira:j.expira||"",vigente:!!j.vigente,demoPlan:(j.demo&&j.demo.plan)||0,demoChat:(j.demo&&j.demo.chat)||0});
+    store.set("bb_alias",j.alias);
+    const ce=$("l_clave");if(ce)ce.value="";
+    closeLogin();renderAccountBtn();renderLegal();renderSus();applyAgentBanner();updEj();
+    return true;
+  }catch(e){setLoginMsg("Sin conexión con el servidor. Revisa tu internet e intenta de nuevo.",true);return false}
+}
+$("bReg").onclick=async()=>{
+  const email=($("l_email").value||"").trim(),clave=$("l_clave").value||"";
+  if(!email){setLoginMsg("Escribe tu email.",true);return}
+  if(!clave){setLoginMsg("Elige una clave (mín. 6). La usarás para entrar.",true);return}
+  if(clave.length<6){setLoginMsg("La clave debe tener al menos 6 caracteres.",true);return}
+  setLoginMsg("Creando tu cuenta…");
+  try{
+    const j=await api({accion:"registro",email,alias:email.split("@")[0],clave});
+    if(!j.ok){setLoginMsg(/ya existe/.test(j.error||"")?"Ese email ya tiene cuenta. Pulsa «Ya tengo cuenta · Entrar».":("No se pudo crear la cuenta: "+(j.error||"intenta de nuevo")),true);return}
+    setLoginMsg("Cuenta creada. Entrando…");
+    await doLogin(email,clave,true);
+  }catch(e){setLoginMsg("Sin conexión. Revisa tu internet e intenta de nuevo.",true)}
+};
+$("bLogin").onclick=async()=>{
+  const email=($("l_email").value||"").trim(),clave=$("l_clave").value||"";
+  if(!email||!clave){setLoginMsg("Escribe tu email y tu clave.",true);return}
+  setLoginMsg("Entrando…");
+  await doLogin(email,clave,false);
+};
+$("lClose").onclick=closeLogin;
+$("lGuest").onclick=closeLogin;
+$("btnAcct").onclick=()=>{ses()?switchTab("sus"):openLogin()};
+$("lForgot").onclick=async()=>{
+  const email=($("l_email").value||"").trim();
+  if(!email){setLoginMsg("Escribe tu email arriba y vuelve a pulsar «¿Olvidaste tu clave?».",true);return}
+  setLoginMsg("Enviando clave temporal a "+email+"…");
+  try{const j=await api({accion:"recuperarClave",email});setLoginMsg(j&&j.ok?"Listo. Revisa tu correo (y la carpeta de spam): te enviamos una clave temporal. Entra con ella.":"No se pudo enviar. Intenta más tarde.",!(j&&j.ok))}catch(e){setLoginMsg("Sin conexión. Intenta más tarde.",true)}
+};
+$("bLogout").onclick=()=>{if(!confirm("¿Cerrar sesión? Podrás volver a entrar con tu correo y clave."))return;localStorage.removeItem("bb_ses");renderAccountBtn();renderSus();applyAgentBanner();updEj();switchTab("rut")};
 
 /* ===== Suscripción / planes (F1-F3) ===== */
 const BANCO={banco:"Banco Bolivariano",tipo:"Cuenta de ahorro",cuenta:"0912001575",titular:"Miguel Barrera Mayor",cedula:"0919324582",pagoMovil:"+593 98 571 8915",correo:"miguelbarreramayor@gmail.com"};
@@ -143,9 +188,16 @@ async function agentPermitido(tipo,quiet){
   return false;
  }catch(e){if(!quiet)alert("Sin conexión con el servidor. El Agente necesita internet para verificar tu cuenta.");return false}
 }
-function paywallHTML(msg){return `<div class="ej paywall"><b>🔒 ${msg||"Función del Agente para suscriptores"}</b><br><span class="muted small">El agente entrenador completo (plan por días, técnica y dieta orientativa) es parte de los planes <b>Básico ($4.99)</b> y <b>VIP ($9.99)</b>. Ahora estás en <b>Free</b>.</span><div class="row"><button id="pwGo">Ver planes y suscribirme</button></div></div>`}
-function showPaywall(msg){const pl=$("a_plan");if(pl){pl.innerHTML=paywallHTML(msg);const b=$("pwGo");if(b)b.onclick=()=>switchTab("sus");pl.scrollIntoView({behavior:"smooth"})}}
-function applyAgentBanner(){const b=$("ageBanner");if(!b)return;const s=ses();if(hasAgent()){b.innerHTML=`<div class="ej ok"><b>✅ Plan ${(PLANES[s.plan]||{}).n||s.plan} activo</b>${s.expira?` · vence ${String(s.expira).slice(0,10)}`:""}</div>`}else{const d=demoRestante();b.innerHTML=`<div class="ej warn"><b>🔓 Estás en Free (modo demostración)</b><br><span class="muted small">Tu muestra: <b>${d.plan}</b>/${DEMO_PLAN} plan · <b>${d.chat}</b>/${DEMO_CHAT} mensajes. El agente completo está en <b>Básico $4.99</b> o <b>VIP $9.99</b>.</span><div class="row"><button id="bnGo">Ver planes</button></div></div>`;const g=$("bnGo");if(g)g.onclick=()=>switchTab("sus")}}
+function paywallHTML(msg){const s=ses();
+ const txt=s?"El agente entrenador completo (plan por días, técnica y dieta orientativa) es parte de los planes <b>Básico ($4.99)</b> y <b>VIP ($9.99)</b>. Ahora estás en <b>Free</b>.":"El agente entrenador se puede probar <b>gratis</b>: crea tu cuenta <b>Free</b> y tendrás <b>1 plan de muestra</b> y <b>5 mensajes</b>. El agente completo está en <b>Básico $4.99</b> / <b>VIP $9.99</b>.";
+ const loginBtn=s?"":'<button id="pwLogin">👤 Crear cuenta Free</button>';
+ const planesBtn=s?'<button id="pwGo">Ver planes y suscribirme</button>':'<button id="pwGo" class="ghost">Ver planes</button>';
+ return `<div class="ej paywall"><b>🔒 ${msg||"Función del Agente para suscriptores"}</b><br><span class="muted small">${txt}</span><div class="row">${loginBtn}${planesBtn}</div></div>`}
+function showPaywall(msg){const pl=$("a_plan");if(pl){pl.innerHTML=paywallHTML(msg);const b=$("pwGo");if(b)b.onclick=()=>switchTab("sus");const lg=$("pwLogin");if(lg)lg.onclick=()=>openLogin();pl.scrollIntoView({behavior:"smooth"})}}
+function applyAgentBanner(){const b=$("ageBanner");if(!b)return;const s=ses();
+ if(hasAgent()){b.innerHTML=`<div class="ej ok"><b>✅ Plan ${(PLANES[s.plan]||{}).n||s.plan} activo</b>${s.expira?` · vence ${String(s.expira).slice(0,10)}`:""}</div>`;return}
+ if(!s){b.innerHTML=`<div class="ej warn"><b>👋 Estás explorando como invitado</b><br><span class="muted small">Crea tu cuenta <b>Free</b> (gratis) para probar el <b>Agente</b>: 1 plan y 5 mensajes. El agente completo está en <b>Básico $4.99</b> / <b>VIP $9.99</b>.</span><div class="row"><button id="bnGo">👤 Crear cuenta Free</button><button id="bnPlans" class="ghost">Ver planes</button></div></div>`;const g=$("bnGo");if(g)g.onclick=()=>openLogin();const pg=$("bnPlans");if(pg)pg.onclick=()=>switchTab("sus");return}
+ const d=demoRestante();b.innerHTML=`<div class="ej warn"><b>🔓 Estás en Free (modo demostración)</b><br><span class="muted small">Tu muestra: <b>${d.plan}</b>/${DEMO_PLAN} plan · <b>${d.chat}</b>/${DEMO_CHAT} mensajes. El agente completo está en <b>Básico $4.99</b> o <b>VIP $9.99</b>.</span><div class="row"><button id="bnGo">Ver planes</button></div></div>`;const g=$("bnGo");if(g)g.onclick=()=>switchTab("sus")}
 function renderSus(){
  const s=ses();
  const st=$("susEstado");
